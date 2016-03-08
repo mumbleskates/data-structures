@@ -13,8 +13,6 @@ CONSTRUCTOR_LISTS = [
     ("asdf", ['f', 'd', 's', 'a']),
     ([1, 1, 1, 1, 1], [1, 1, 1, 1, 1]),
 ]
-
-
 @pytest.mark.parametrize('values, result', CONSTRUCTOR_LISTS)
 def test_constructor(values, result):
     from linked_list import LinkedList
