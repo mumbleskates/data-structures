@@ -63,7 +63,9 @@ class LinkedList(object):
             return False
 
         def display(self):
-            print(tuple(self))
+            print("({})".format(
+                ", ".join(map(repr, self))
+            ))
 
 
 # DONE: insert(val) will insert the value ‘val’ at the head of the list
