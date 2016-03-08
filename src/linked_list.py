@@ -29,6 +29,8 @@ class LinkedList(object):
 
         def pop(self):
             first_node = self.head.point
+            if first_node is self.head:
+                raise IndexError("Pop from no items")
             self.head.point = first_node.point
             self.length -= 1
             return first_node.data
