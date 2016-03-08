@@ -8,10 +8,12 @@ class Node(object):
 
 
 class LinkedList(object):
-        def __init__(self):
+        def __init__(self, items=()):
             self.head = Node()
             self.head.point = self.head
             self.length = 0
+            for item in items:
+                self.insert(item)
 
         def __iter__(self):
             n = self.head.point

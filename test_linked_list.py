@@ -1,5 +1,29 @@
 # coding=utf-8
 import pytest
+import mock
+
+
+CONSTRUCTOR_LISTS = [
+    ([], []),
+    ([1, 2, 3], [3, 2, 1]),
+    ([5], [5]),
+    ([3, 4, [3, 4, 5], 3, None], [None, 3, [3, 4, 5], 4, 3]),
+    ("asdf", ['f', 'd', 's', 'a']),
+    ([1, 1, 1, 1, 1], [1, 1, 1, 1, 1]),
+]
+
+
+@pytest.mark.parametrize('values, result', CONSTRUCTOR_LISTS)
+def test_constructor(values, result):
+    from linked_list import LinkedList
+    assert list(LinkedList(values)) == result
+
+
+def test_constructor_failure():
+    from linked_list import LinkedList
+    # None is not iterable
+    with pytest.raises(TypeError):
+        LinkedList(None)
 
 
 def test_empty_list():
