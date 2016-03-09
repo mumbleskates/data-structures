@@ -4,7 +4,7 @@
 #DONE: append(val) will append the value ‘val’ at the tail of the list
 #TODO: pop() will pop the first value off the head of the list and return it.
 #TODO: shift() will remove the last value from the tail of the list and return it.
-#TODO: remove(val) will remove the first instance of ‘val’ found in the list, starting from the head. If ‘val’ is
+#DONE: remove(val) will remove the first instance of ‘val’ found in the list, starting from the head. If ‘val’ is
 # not present, it will raise an appropriate Python exception.
 
 
@@ -14,6 +14,9 @@ class Node(object):
         self._prev = _prev
         self._next = _next
 
+    def remove(self):
+        self._next._prev = self._prev
+        self._prev._next = self._next
 
 # We're only accessing _next and _prev in the Node class
 # noinspection PyProtectedMember
@@ -60,7 +63,12 @@ class Dll(object):
         self._next = new_node
 
     def remove(self, value):
-        pass
+        n = self._next
+        while n is not self:
+            if value == n.data:
+                n.remove()
+                return
+            n = n._next
 
     def pop(self):
         pass
