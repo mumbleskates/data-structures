@@ -1,22 +1,24 @@
 # coding=utf-8
 from __future__ import unicode_literals, print_function
-from builtins import *
+from builtins import range
 
 import pytest
 
 
 CONSTRUCTOR_LISTS = [
-    ([], []),
-    ([1, 2, 3], [3, 2, 1]),
-    ([5], [5]),
-    ([3, 4, [3, 4, 5], 3, None], [None, 3, [3, 4, 5], 4, 3]),
-    ("asdf", ['f', 'd', 's', 'a']),
-    ([1, 1, 1, 1, 1], [1, 1, 1, 1, 1]),
+    [],
+    [1, 2, 3],
+    [5],
+    [3, 4, [3, 4, 5], 3, None],
+    "asdf",
+    [1, 1, 1, 1, 1],
 ]
-@pytest.mark.parametrize('values, result', CONSTRUCTOR_LISTS)
-def test_constructor(values, result):
+
+
+@pytest.mark.parametrize('values', CONSTRUCTOR_LISTS)
+def test_constructor(values):
     from linked_list import LinkedList
-    assert list(LinkedList(values)) == result
+    assert list(LinkedList(values)) == list(reversed(values))
 
 
 def test_constructor_failure():
@@ -45,18 +47,18 @@ def test_insert():
 
 
 TEST_POP = {
-    (1, 1),
-    (55, 55),
-    (123490872988582498572379827512423, 123490872988582498572379827512423)
+    1,
+    55,
+    123490872988582498572379827512423,
 }
 
 
-@pytest.mark.parametrize("node_value, result", TEST_POP)
+@pytest.mark.parametrize("node_value", TEST_POP)
 def test_pop(node_value, result):
     from linked_list import LinkedList
     a_list = LinkedList()
     a_list.insert(node_value)
-    assert a_list.pop() == result
+    assert a_list.pop() == node_value
 
 
 def test_search():
