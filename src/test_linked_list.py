@@ -54,7 +54,7 @@ TEST_POP = {
 
 
 @pytest.mark.parametrize("node_value", TEST_POP)
-def test_pop(node_value, result):
+def test_pop(node_value):
     from linked_list import LinkedList
     a_list = LinkedList()
     a_list.insert(node_value)
