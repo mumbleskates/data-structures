@@ -1,72 +1,55 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+from builtins import range
+
 import pytest
 
 
-# We are testing invalid arguments
-# noinspection PyArgumentList
-def test_init():
+@pytest.mark.parametrize("params", [
+    (),
+    ([1],),
+    ([1, 2, 3, 4],),
+    ("abc",),
+])
+def test_init(params):
     from stack import Stack
-
-    Stack()
-    Stack([1])
-    Stack([1, 2, 3, 4])
-    Stack("abc")
-    with pytest.raises(TypeError):
-        Stack(1)
-    with pytest.raises(TypeError):
-        Stack(1, 2)
-    with pytest.raises(TypeError):
-        Stack([1, 2], 3, 4)
+    Stack(*params)
 
 
-# We are testing invalid arguments
-# noinspection PyArgumentList
-def test_push():
+@pytest.mark.parametrize("params", [
+    (1,),
+    (1, 2),
+    ([1, 2], 3, 4),
+])
+def test_bad_init(params):
     from stack import Stack
+    with pytest.raises(TypeError):
+        Stack(*params)
 
+
+LISTS = [
+    [],
+    [1, 1, 1],
+    list(range(10)),
+    [[1, 2], [2, 3, 4]],
+]
+
+
+@pytest.mark.parametrize("items", LISTS)
+def test_push(items):
+    from stack import Stack
     s = Stack()
-
-    s.push(1)
-    assert s.pop() == 1
-
-    with pytest.raises(TypeError):
-        s.push(1, 2)
-
-    s.push([1, 2])
-    assert s.pop() == [1, 2]
-
-    for i in range(100):
-        s.push(i)
-    assert s.pop() == 99
+    for item in items:
+        s.push(item)
+    for item in reversed(items):
+        assert s.pop() == item
 
 
-# We are testing invalid arguments
-# noinspection PyArgumentList
-def test_pop():
+@pytest.mark.parametrize("items", LISTS)
+def test_pop(items):
     from stack import Stack
-
-    s = Stack()
-    with pytest.raises(IndexError):
-        s.pop()
-
-    s = Stack([1])
-    with pytest.raises(TypeError):
-        s.pop(1)
-    assert s.pop() == 1
-    with pytest.raises(IndexError):
-        s.pop()
-
-    s = Stack([1, 2])
-    assert s.pop() == 2
-    assert s.pop() == 1
-    with pytest.raises(IndexError):
-        s.pop()
-
-    s = Stack("abc")
-    assert s.pop() == 'c'
-    assert s.pop() == 'b'
-    assert s.pop() == 'a'
-    with pytest.raises(IndexError):
-        s.pop()
+    s = Stack(items)
+    for item in reversed(items):
+        assert s.pop() == item
     with pytest.raises(IndexError):
         s.pop()
