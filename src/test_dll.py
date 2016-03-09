@@ -19,3 +19,15 @@ def test_append(items):
 
 def test_insert():
     pass
+
+
+def test_remove():
+    pass
+
+
+def test_pop():
+    pass
+
+
+def test_shift():
+    pass
