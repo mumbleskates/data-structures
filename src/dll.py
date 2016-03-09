@@ -7,6 +7,7 @@
 #TODO: remove(val) will remove the first instance of ‘val’ found in the list, starting from the head. If ‘val’ is
 # not present, it will raise an appropriate Python exception.
 
+
 class Node(object):
     def __init__(self, data=None, _prev=None, _next=None,):
         self.data = data
@@ -14,6 +15,8 @@ class Node(object):
         self._next = _next
 
 
+# We're only accessing _next and _prev in the Node class
+# noinspection PyProtectedMember
 class Dll(object):
     """
     A simple double-ly linked-list implementation
@@ -37,10 +40,10 @@ class Dll(object):
         Iterate over the values of the elements in the list
         in pop-order (first to last)
         """
-        n = self._next._next
-        while n is not self._next:
+        n = self._next
+        while n is not self:
             yield n.data
-            n = n.point
+            n = n._next
 
     def append(self, value):
         """Append a new element at the back of the list with the given value"""
@@ -48,7 +51,6 @@ class Dll(object):
         new_node = Node(value, current_tail, self)
         current_tail._next = new_node
         self._prev = new_node
-
 
     def insert(self, value):
         """Insert a new element at the front of the list with the given value"""

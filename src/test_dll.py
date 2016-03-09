@@ -1,24 +1,30 @@
 # -*- coding: utf-8 -*-
 
+import pytest
 
-
-TEST_SET = {
+TEST_SET = [
     [],
     [1],
     [2, 3, 4],
-    "abc",
-}
+]
 
-@pytest.mark.parameterize("items", TEST_SET)
+
+@pytest.mark.parametrize("items", TEST_SET)
 def test_append(items):
     from dll import Dll
     t_dll = Dll()
-    t_dll.append(items)
+    for item in items:
+        t_dll.append(item)
     assert list(t_dll) == list(items)
 
 
-def test_insert():
-    pass
+@pytest.mark.parametrize("items", TEST_SET)
+def test_insert(items):
+    from dll import Dll
+    t_dll = Dll()
+    for item in reversed(items):
+        t_dll.append(item)
+    assert list(t_dll) == list(items)
 
 
 def test_remove():
