@@ -57,3 +57,11 @@ class Dll(object):
         current_head._prev = new_node
         self._next = new_node
 
+    def remove(self, value):
+        pass
+
+    def pop(self):
+        pass
+
+    def shift(self):
+        pass
