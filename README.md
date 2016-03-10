@@ -2,6 +2,12 @@
 
 ## This project contains sample code for implementing the following structures:
 
+### Queue
+
+This data structure, a Queue, is an abstract data type or a linear data structure, in which the first element is 
+inserted from one end called REAR(or tail), and the deletion of existing element takes place from the other end 
+called as FRONT(or head).
+
 ### Doubly Linked List
 
 This data structure is a linked data structure that consists of a set of sequentially linked records called nodes. Each 
