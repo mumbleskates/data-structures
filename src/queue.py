@@ -1,24 +1,28 @@
 # -*- coding: utf-8 -*-
-from linked_list import LinkedList
-
-# TODO: enqueue(value): adds value to the queue
-# TODO: dequeue(): removes the correct item from the queue and returns its value (should raise an error if the queue is empty)
-# TODO: peek(): returns the next value in the queue without dequeueing it. If the queue is empty, returns None
-# TODO: size(): return the size of the queue. Should return 0 if the queue is empty.
+from dll import Dll
+from builtins import next, reversed
 
 
-class Queue(LinkedList):
-    def __init__(self):
-        pass
+class Queue(object):
+    def __init__(self, items=()):
+        self._list = Dll(items)
+        self._len = 0
 
-    def enqueue(self, value):
-        pass
+    def __len__(self, other):
+        return self._len
+
+    def enqueue(self, item):
+        self._len += 1
+        self._list.append(item)
 
     def dequeue(self):
-        pass
+        self._len -= 1
+        return self._list.pop()
 
     def peek(self):
-        pass
+        if not self._len:
+            return None
+        else:
+            return next(reversed(self._list))
 
-    def size(self):
-        pass
+    size = __len__
