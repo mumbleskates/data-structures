@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-#DONE: insert(val) will insert the value ‘val’ at the head of the list
-#DONE: append(val) will append the value ‘val’ at the tail of the list
-#TODO: pop() will pop the first value off the head of the list and return it.
-#TODO: shift() will remove the last value from the tail of the list and return it.
-#DONE: remove(val) will remove the first instance of ‘val’ found in the list, starting from the head. If ‘val’ is
+# DONE: insert(val) will insert the value ‘val’ at the head of the list
+# DONE: append(val) will append the value ‘val’ at the tail of the list
+# TODO: pop() will pop the first value off the head of the list and return it.
+# TODO: shift() will remove the last value from the tail of the list and return it.
+# DONE: remove(val) will remove the first instance of ‘val’ found in the list, starting from the head. If ‘val’ is
 # not present, it will raise an appropriate Python exception.
 
 
@@ -14,9 +14,10 @@ class Node(object):
         self._prev = _prev
         self._next = _next
 
-    def remove(self):
+    def remove_node(self):
         self._next._prev = self._prev
         self._prev._next = self._next
+
 
 # We're only accessing _next and _prev in the Node class
 # noinspection PyProtectedMember
@@ -63,15 +64,27 @@ class Dll(object):
         self._next = new_node
 
     def remove(self, value):
+        """Remove the first occurrence of value in the list"""
         n = self._next
         while n is not self:
+            # noinspection PyArgumentList
             if value == n.data:
-                n.remove()
+                n.remove_node()
                 return
             n = n._next
 
     def pop(self):
-        pass
+        """Remove and return the first value in the list"""
+        head = self._next
+        if head == self:
+            raise IndexError("Popped from an empty list")
+        head.remove_node()
+        return head.data
 
     def shift(self):
-        pass
+        """Remove and return the last value in the list"""
+        tail = self._prev
+        if tail is self:
+            raise IndexError("Shifted from an empty list")
+        tail.remove_node()
+        return tail.data
