@@ -16,12 +16,12 @@ class _Node(object):
 # noinspection PyProtectedMember
 class Dll(object):
     """
-    A simple double-ly linked-list implementation
+    A simple doubly linked-list implementation
     """
 
     def __init__(self, items=()):
         """
-        Create a new double-ly linked list.
+        Create a new doubly linked list.
 
         Optionally include an iterable of values to add to the list;
         after the list is built, the last item in the iterable will

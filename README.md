@@ -2,6 +2,11 @@
 
 ## This project contains sample code for implementing the following structures:
 
+### Doubly Linked List
+
+This data structure is a linked data structure that consists of a set of sequentially linked records called nodes. Each 
+node contains two fields, called _next and _prev, that are references to the previous(_prev) and to the next(_next) node 
+in the sequence of nodes.
 
 ### Stack
 
