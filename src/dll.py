@@ -42,6 +42,16 @@ class Dll(object):
             yield n.data
             n = n._next
 
+    def __reversed__(self):
+        """
+        Iterate over the values of the elements in the list
+        in shift-order (last to first)
+        """
+        n = self._prev
+        while n is not self:
+            yield n.data
+            n = n._prev
+
     def append(self, value):
         """Append a new element at the back of the list with the given value"""
         current_tail = self._prev
