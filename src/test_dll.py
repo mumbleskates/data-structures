@@ -29,8 +29,8 @@ def test_insert(items):
 
 
 TEST_SET_REMOVE = [
+    ([1], 1, []),
     ([1, 2, 3], 2, [1, 3]),
-    ([1, 2, 3], 4, [1, 2, 3]),
     ([1, 2, 3, 2], 2, [1, 3, 2]),
 ]
 
@@ -41,6 +41,21 @@ def test_remove(test_list, remove_me, result):
     t_dll = Dll(test_list)
     t_dll.remove(remove_me)
     assert list(t_dll) == result
+
+
+TEST_SET_REMOVE_ABSENT = [
+    ([1, 2, 3], 4),
+    ([], 4),
+]
+
+
+@pytest.mark.parametrize("items, remove_me", TEST_SET_REMOVE_ABSENT)
+def test_remove_absent(items, remove_me):
+    from dll import Dll
+    t_dll = Dll(items)
+    with pytest.raises(ValueError):
+        t_dll.remove(remove_me)
+    assert list(t_dll) == items
 
 
 POP_SHIFT_LISTS = [

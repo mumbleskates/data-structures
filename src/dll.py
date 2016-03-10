@@ -1,14 +1,7 @@
 # -*- coding: utf-8 -*-
 
-# DONE: insert(val) will insert the value ‘val’ at the head of the list
-# DONE: append(val) will append the value ‘val’ at the tail of the list
-# TODO: pop() will pop the first value off the head of the list and return it.
-# TODO: shift() will remove the last value from the tail of the list and return it.
-# DONE: remove(val) will remove the first instance of ‘val’ found in the list, starting from the head. If ‘val’ is
-# not present, it will raise an appropriate Python exception.
 
-
-class Node(object):
+class _Node(object):
     def __init__(self, data=None, _prev=None, _next=None,):
         self.data = data
         self._prev = _prev
@@ -52,14 +45,14 @@ class Dll(object):
     def append(self, value):
         """Append a new element at the back of the list with the given value"""
         current_tail = self._prev
-        new_node = Node(value, current_tail, self)
+        new_node = _Node(value, current_tail, self)
         current_tail._next = new_node
         self._prev = new_node
 
     def insert(self, value):
         """Insert a new element at the front of the list with the given value"""
         current_head = self._next
-        new_node = Node(value, self, current_head)
+        new_node = _Node(value, self, current_head)
         current_head._prev = new_node
         self._next = new_node
 
@@ -72,6 +65,8 @@ class Dll(object):
                 n.remove_node()
                 return
             n = n._next
+        else:
+            raise ValueError("Dll.remove(x): x not in list")
 
     def pop(self):
         """Remove and return the first value in the list"""
