@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+from __future__ import unicode_literals, print_function
 from builtins import range
 
 import pytest
@@ -59,7 +59,8 @@ def test_peek():
     from queue import Queue
     q = Queue(range(4))
     for _ in range(4):
-        assert q.peek() == q.dequeue()
+        expected = q.peek()
+        assert expected == q.dequeue()
     # queue is now empty
     assert q.peek() is None
 

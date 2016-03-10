@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals, print_function
+from builtins import next
+
 from dll import Dll
-from builtins import next, reversed
 
 
 class Queue(object):
     def __init__(self, items=()):
-        self._list = Dll(items)
+        self._list = Dll()
         self._len = 0
+        for item in items:
+            self.enqueue(item)
 
     def __len__(self):
         """
@@ -37,6 +41,6 @@ class Queue(object):
         if not self._len:
             return None
         else:
-            return next(reversed(self._list))
+            return next(iter(self._list))
 
     size = __len__
