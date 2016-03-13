@@ -28,12 +28,14 @@ def check_parens(string, pairs="()"):
     set()
     >>> check_parens("[<><>]", "[]<>")
     set()
-    >>> check_parens("asdf)")
-    {(')', -1, 4)}
+    >>> check_parens("))asdf]", "[]")
+    {(']', -1, 6)}
     >>> sorted(check_parens("{{{(", "{}()"))
     [('(', 1, None), ('{', 3, None)]
     >>> check_parens(check_parens.__doc__, "{}")
     {('{', 5, None)}
+    >>> check_parens(check_parens.__doc__, "<>")
+    {('>', -1, 960)}
     """
     begins = {}
     ends = {}
