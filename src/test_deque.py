@@ -89,4 +89,4 @@ def test_peekleft():
     while d:
         peek = d.peekleft()
         assert d.popleft() == peek
-    assert d.peekleft is None
+    assert d.peekleft() is None
