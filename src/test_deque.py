@@ -44,7 +44,7 @@ def test_appendleft():
     expected = []
     for item in range(5):
         d.appendleft(item)
-        expected.insert(item, 0)
+        expected.insert(0, item)
         bidirectional_match(d, expected)
 
 

@@ -32,31 +32,36 @@ class Deque(object):
         """
         return reversed(self._list)
 
+    def __len__(self):
+        return self._len
+
     def append(self, val):
         """
         adds a value to the front of the deque
         """
-        self._len += 1
         self._list.append(val)
+        self._len += 1
 
     def appendleft(self, val):
         """
         adds a value to the front of the deque
         """
-        self._len += 1
         self._list.insert(val)
+        self._len += 1
 
     def pop(self):
         """
         removes a value from the end of the deque and returns it (raises an exception if
         the deque is empty)
         """
+        result = self._list.shift()
         self._len -= 1
-        self.pop()
+        return result
 
     def popleft(self):
+        result = self._list.pop()
         self._len -= 1
-        self._list.shift()
+        return result
 
     def peek(self):
         """
@@ -66,14 +71,17 @@ class Deque(object):
         if not self._len:
             return None
         else:
-            return next(iter(self._list))
+            return next(reversed(self._list))
 
     def peekleft(self):
         """
         returns the next value that would be returned by popleft but leaves the value in
         the deque (returns None if the deque is empty)
         """
-        pass
+        if not self._len:
+            return None
+        else:
+            return next(iter(self._list))
 
     def size(self):
         """
