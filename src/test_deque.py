@@ -1,6 +1,6 @@
 # coding=utf-8
 from __future__ import unicode_literals
-from builtins import *
+from builtins import reversed
 
 from itertools import count
 
@@ -9,8 +9,8 @@ import pytest
 
 LISTS = [
     [],
-    [1] * 10,
-    [1, 2, 3] * 5,
+    [1] * 6,
+    [1, 2, 3] * 3,
     list(range(10)),
     list("asdfwablllllll"),
 ]
