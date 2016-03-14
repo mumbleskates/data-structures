@@ -4,17 +4,9 @@ from builtins import next
 
 from dll import Dll
 
-# DONE: append(val): adds value to the end of the deque
-# DONE: appendleft(val): adds a value to the front of the deque
-# DONE: pop(): removes a value from the end of the deque and returns it (raises an exception if the deque is empty)
-# DONE: popleft(): removes a value from the front of the deque and returns it (raises an exception if the deque is empty)
-# DONE: peek(): returns the next value that would be returned by pop but leaves the value in the deque (returns None if the deque is empty)
-# DONE: peekleft(): returns the next value that would be returned by popleft but leaves the value in the deque (returns None if the deque is empty)
-# DONE: size(): returns the count of items in the queue (returns 0 if the queue is empty)
-
 
 class Deque(object):
-    def __init__(self, items=items()):
+    def __init__(self, items=()):
         """
         Create an empty Deque
 
@@ -44,12 +36,14 @@ class Deque(object):
         """
         adds a value to the front of the deque
         """
+        self._len += 1
         self._list.append(val)
 
     def appendleft(self, val):
         """
         adds a value to the front of the deque
         """
+        self._len += 1
         self._list.insert(val)
 
     def pop(self):
@@ -57,9 +51,11 @@ class Deque(object):
         removes a value from the end of the deque and returns it (raises an exception if
         the deque is empty)
         """
+        self._len -= 1
         self.pop()
 
     def popleft(self):
+        self._len -= 1
         self._list.shift()
 
     def peek(self):
