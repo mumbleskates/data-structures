@@ -9,8 +9,7 @@ class BinHeap(object):
 
     def push(self, val):
         """
-        Puts a new value into the heap, maintaining the heap property.
-        Then reorders the values bottom up.
+        Puts a new value into the heap, maintaining the heap invariant.
         """
         pos = len(self._list)  # Note: getting length before add
         self._list.append(val)
@@ -29,8 +28,7 @@ class BinHeap(object):
 
     def pop(self):
         """
-        Removes the “top” value in the heap, maintaining the heap property.
-        Then reorders the values top down .
+        Removes the greatest value in the heap, maintaining the heap invariant.
         """
         return_value = self._list[0]
         val = self._list.pop()
