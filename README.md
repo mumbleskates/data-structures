@@ -2,6 +2,15 @@
 
 ## This project contains sample code for implementing the following structures:
 
+### Binary Heap
+
+This data structure, Heap, is a specialized tree-based data structure that 
+satisfies the heap property: If A is a parent node of B then the key of 
+node A is ordered with respect to the key of node B with the same ordering 
+applying across the heap. Fills from left to right. There are minHeap 
+and maxHeap alternatives.
+
+
 ### Deque
 
 This data structure, Deque (usually pronounced like "deck"), is an irregular acronym of double-ended 
