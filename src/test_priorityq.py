@@ -7,6 +7,8 @@ import pytest
 # TODO: .peek(): returns the most important item without removing it from the queue.
 
 
+
+@pytest.mark.parametrize("items", TEST_ITEMS)
 def test_init(self, items=()):
     pass
 

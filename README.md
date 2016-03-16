@@ -10,6 +10,10 @@ node A is ordered with respect to the key of node B with the same ordering
 applying across the heap. Fills from left to right. There are minHeap 
 and maxHeap alternatives.
 
+### Priority Queue
+
+This data structure, a priority queue, is an abstract data type which is like a regular queue or stack data structure, 
+but where additionally each element has a "priority" associated with it.
 
 ### Deque
 
