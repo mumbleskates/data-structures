@@ -1,19 +1,25 @@
 # coding=utf-8
 
-# TODO: .insert(item): inserts an item into the queue.
-# TODO: .pop(): removes the most important item from the queue.
-# TODO: .peek(): returns the most important item without removing it from the queue.
+from binheap import BinHeap
+
+# DONE: .insert(item): inserts an item into the queue.
+# DONE: .pop(): removes the most important item from the queue.
+# DONE: .peek(): returns the most important item without removing it from the queue.
 
 class priotityq(object):
     def __init__(self, items=()):
-        pass
+        self._heap = BinHeap()
+        for item in items:
+            self.insert(item)
 
-    def insert(self, item):
-        pass
+    def insert(self, item, priority=1):
+        self._heap.push((priority, item))
 
     def pop(self):
-        pass
+        priority, item = self._heap.pop()
+        return item
 
     def peek(self):
-        pass
+        priority, item = self._heap.peek()
+        return item
 
