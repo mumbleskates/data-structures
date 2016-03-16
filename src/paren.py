@@ -14,8 +14,8 @@ def proper_paren(test_string):
         if char is ")":
             right_count += 1
         if left_count < right_count:
-            return 1
+            return -1
     if left_count > right_count:
-        return -1
+        return 1
     else:
         return 0
