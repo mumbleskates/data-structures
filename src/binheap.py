@@ -16,7 +16,7 @@ class BinHeap(object):
 
         # Compares the a value in the list with its parent and swaps if value is greater
         while pos:  # stop comparing to parents when we are at index 0, the root of the tree
-            parent_index = (pos - 1) // 2
+            parent_index = (pos - 1) >> 1
             if val > self._list[parent_index]:
                 self._list[pos] = self._list[parent_index]
                 pos = parent_index
@@ -35,7 +35,7 @@ class BinHeap(object):
         if self._list:
             pos = 0
             while True:
-                left = pos * 2 + 1
+                left = (pos << 1) + 1
                 right = left + 1
 
                 # checks if we have a left
