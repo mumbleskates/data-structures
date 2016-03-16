@@ -5,10 +5,10 @@
 # DONE: Return -1 if the string is “broken” (a closing parens has not been proceeded by one that opens)
 
 
-def proper_paren(test_string):
+def proper_paren(text):
     left_count = 0
     right_count = 0
-    for char in test_string:
+    for char in text:
         if char is "(":
             left_count += 1
         if char is ")":
