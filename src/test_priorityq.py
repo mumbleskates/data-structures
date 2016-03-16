@@ -1,12 +1,8 @@
 # coding=utf-8
 from builtins import range
 
-from itertools import repeat
 import pytest
 
-# TODO: .insert(item): inserts an item into the queue.
-# TODO: .pop(): removes the most important item from the queue.
-# TODO: .peek(): returns the most important item without removing it from the queue.
 
 TEST_ITEMS = [
     [],
