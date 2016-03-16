@@ -7,21 +7,20 @@ from itertools import count
 # DONE: .pop(): removes the most important item from the queue.
 # DONE: .peek(): returns the most important item without removing it from the queue.
 
-class PriotityQ(object):
-    def __init__(self, items=()):
+
+class PriorityQ(object):
+    def __init__(self):
         self._heap = BinHeap()
         self._unique = count()
-        for item in items:
-            self.insert(item)
 
     def insert(self, item, priority=1):
         self._heap.push((priority, next(self._unique), item))
 
     def pop(self):
-        priority, item = self._heap.pop()
+        priority, _, item = self._heap.pop()
         return item
 
     def peek(self):
-        priority, item = self._heap.peek()
+        priority, _, item = self._heap.peek()
         return item
 
