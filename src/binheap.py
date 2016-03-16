@@ -8,6 +8,9 @@ class BinHeap(object):
             self.push(item)
 
     def push(self, val):
+        """
+        Puts a new value into the heap, maintaining the heap invariant.
+        """
         pos = len(self._list)  # Note: getting length before add
         self._list.append(val)  # this could be any value we are appending, we're just making the list longer
 
@@ -20,10 +23,13 @@ class BinHeap(object):
             else:
                 break
 
-        # If we get here we're at the top of the list or found where to put the value
+        # We've reached the top of the list or found where to put the value
         self._list[pos] = val
 
     def pop(self):
+        """
+        Removes the greatest value in the heap, maintaining the heap invariant.
+        """
         return_value = self._list[0]
         val = self._list.pop()
         if self._list:
@@ -50,7 +56,7 @@ class BinHeap(object):
                     # If we reach here we are bigger than our children and are done
                     break
 
-            # If we get here we're at the bottom of the list or found where to put the value
+            # We've reached the bottom of the list or found where to put the value
             self._list[pos] = val
 
         return return_value
