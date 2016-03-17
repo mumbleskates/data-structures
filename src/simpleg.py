@@ -7,18 +7,11 @@ class Graph(object):
 
     def nodes(self):
         """return a set of all nodes in the graph"""
-        nodes_set = set()
-        for key in self._dict:
-            nodes_set.add(self._dict[key])
-        return nodes_set
+        return set(self._dict)
 
     def edges(self):
         """return a set of all edges in the graph"""
-        edges_set = set()
-        for key in self._dict:
-            for value in self._dict[key]:
-                edges_set.add((key, value))
-        return edges_set
+        return set((node, neighbor) for node in self._dict for neighbor in self._dict[node])
 
     def add_node(self, node):
         """add a new node to the graph"""
@@ -66,6 +59,6 @@ class Graph(object):
         if either of the supplied nodes are not in g
         """
         # check is end is in the Graph, returns KeyError
-        self._dict[end]
+        _ = self._dict[end]
         # check is end is in the node start set of the, returns KeyError
         return end in self._dict[start]
