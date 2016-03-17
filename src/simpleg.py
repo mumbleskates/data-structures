@@ -6,62 +6,66 @@ class Graph(object):
         self._dict = {}
 
     def nodes(self):
-        """return a list of all nodes in the graph"""
-        nodes_list = []
+        """return a set of all nodes in the graph"""
+        nodes_set = set()
         for key in self._dict:
-            nodes_list.append(self._dict[key])
-        return nodes_list
+            nodes_set.add(self._dict[key])
+        return nodes_set
 
     def edges(self):
-        """return a list of all edges in the graph"""
-        edges_list = []
+        """return a set of all edges in the graph"""
+        edges_set = set()
         for key in self._dict:
             for value in self._dict[key]:
-                edges_list.append(key, value)
-        return edges_list
+                edges_set.add((key, value))
+        return edges_set
 
     def add_node(self, node):
         """add a new node to the graph"""
-        pass
+        self._dict.setdefault(node, set())
 
     def add_edge(self, start, end):
         """
         add a new edge to the graph connecting ‘n1’ and ‘n2’, if either n1 or n2 are not
         already present in the graph, they should be added.
         """
-        existing_ends = self._dict[start]
-        existing_ends.append(end)
-        self._dict[start].update(existing_ends)
+        self.add_node(start)
+        self.add_node(end)
+        self._dict[start].add(end)
 
     def del_node(self, n):
         """delete the node ‘n’ from the graph, raises an error if no such node exists"""
-        pass
+        # remove the node
+        self._dict.pop(n)
+        # remove any references to n
+        for node in self._dict:
+            self._dict[node].discard(n)
 
     def del_edge(self, start, end):
         """
         delete the edge connecting ‘n1’ and ‘n2’ from the graph, raises an error if no
         such edge exists
         """
-        existing_ends = self._dict[start]
-        existing_ends.remove(end)
-        self._dict[start].update(existing_ends)
+        self._dict[start].remove(end)
 
     def has_node(self, n):
         """True if node ‘n’ is contained in the graph, False if not."""
-        return bool(self._dict[n])
+        return n in self._dict
 
     def neighbors(self, n):
         """
-        return the list of all nodes connected to ‘n’ by edges, raises an error
+        return the set of all nodes connected to ‘n’ by edges, raises an error
         if n is not in g
         """
-        return self._dict[n]
+        # returns a copy so people can't mess with it
+        return self._dict[n].copy()
 
     def adjacent(self, start, end):
         """
-        reurn True if there is an edge connecting n1 and n2, False if not, raises an error
+        return True if there is an edge connecting n1 and n2, False if not, raises an error
         if either of the supplied nodes are not in g
         """
-        if end in self._dict[start]:
-            return True
-        return False
+        # check is end is in the Graph, returns KeyError
+        self._dict[end]
+        # check is end is in the node start set of the, returns KeyError
+        return end in self._dict[start]
