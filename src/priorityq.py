@@ -3,10 +3,6 @@
 from binheap import BinHeap
 from itertools import count
 
-# DONE: .insert(item): inserts an item into the queue.
-# DONE: .pop(): removes the most important item from the queue.
-# DONE: .peek(): returns the most important item without removing it from the queue.
-
 
 class PriorityQ(object):
     def __init__(self):
@@ -14,13 +10,16 @@ class PriorityQ(object):
         self._unique = count()
 
     def insert(self, item, priority=1):
+        """insert(item): inserts an item into the queue."""
         self._heap.push((priority, next(self._unique), item))
 
     def pop(self):
+        """pop(): removes the most important item from the queue."""
         priority, _, item = self._heap.pop()
         return item
 
     def peek(self):
+        """peek(): returns the most important item without removing it from the queue."""
         priority, _, item = self._heap.peek()
         return item
 
