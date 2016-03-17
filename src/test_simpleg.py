@@ -19,8 +19,6 @@ def test_nodes(g):
 def test_edges(g):
     assert set(g.edges()) == set()
     for i in range(5):
-        g.add_node(i)
-    for i in range(5):
         g.add_edge(i, (i + 1) % 5)
     assert set(g.edges()) == {
         (i, (i + 1) % 5)
@@ -32,8 +30,11 @@ def test_edges(g):
 #     this test is covered by test_nodes
 
 
-# def test_add_edge(g):
-#     this test is covered by test_edges
+def test_add_edge(g):
+    g.add_edge(1, 2)
+    assert g.has_node(1)
+    assert g.has_node(2)
+    assert g.has_edge(1, 2)
 
 
 def test_del_node(g):
@@ -47,8 +48,6 @@ def test_del_node(g):
 
 
 def test_del_edge(g):
-    g.add_node(1)
-    g.add_node(2)
     g.add_edge(1, 2)
     assert g.adjacent(1, 2)
     g.del_edge(1, 2)
@@ -76,8 +75,7 @@ def test_neighbors(g):
 
 
 def test_adjacent(g):
-    for i in range(3):
-        g.add_node(i)
+    g.add_node(0)
     g.add_edge(1, 2)
     assert g.adjacent(1, 2)
     assert not g.adjacent(1, 0)
