@@ -4,6 +4,8 @@ from builtins import range
 
 import pytest
 
+from data_structures.stack import Stack
+
 
 @pytest.mark.parametrize("params", [
     (),
@@ -12,7 +14,6 @@ import pytest
     ("abc",),
 ])
 def test_init(params):
-    from stack import Stack
     Stack(*params)
 
 
@@ -22,7 +23,6 @@ def test_init(params):
     ([1, 2], 3, 4),
 ])
 def test_bad_init(params):
-    from stack import Stack
     with pytest.raises(TypeError):
         Stack(*params)
 
@@ -37,7 +37,6 @@ LISTS = [
 
 @pytest.mark.parametrize("items", LISTS)
 def test_push(items):
-    from stack import Stack
     s = Stack()
     for item in items:
         s.push(item)
@@ -47,7 +46,6 @@ def test_push(items):
 
 @pytest.mark.parametrize("items", LISTS)
 def test_pop(items):
-    from stack import Stack
     s = Stack(items)
     for item in reversed(items):
         assert s.pop() == item

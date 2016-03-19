@@ -4,6 +4,8 @@ from builtins import range
 
 import pytest
 
+from data_structures.linked_list import LinkedList
+
 
 CONSTRUCTOR_LISTS = [
     [],
@@ -17,26 +19,22 @@ CONSTRUCTOR_LISTS = [
 
 @pytest.mark.parametrize('values', CONSTRUCTOR_LISTS)
 def test_constructor(values):
-    from linked_list import LinkedList
     assert list(LinkedList(values)) == list(reversed(values))
 
 
 def test_constructor_failure():
-    from linked_list import LinkedList
     # None is not iterable
     with pytest.raises(TypeError):
         LinkedList(None)
 
 
 def test_empty_list():
-    from linked_list import LinkedList
     a_list = LinkedList()
     assert a_list.length == 0
     assert list(a_list) == []
 
 
 def test_insert():
-    from linked_list import LinkedList
     a_list = LinkedList()
     a_list.insert(1)
     assert list(a_list) == [1]
@@ -45,7 +43,6 @@ def test_insert():
 
 @pytest.mark.parametrize("items", CONSTRUCTOR_LISTS)
 def test_pop(items):
-    from linked_list import LinkedList
     s = LinkedList(items)
     for item in reversed(items):
         assert s.pop() == item
@@ -54,7 +51,6 @@ def test_pop(items):
 
 
 def test_search():
-    from linked_list import LinkedList
     items = range(10)
     a_list = LinkedList(items)
     # searching for a non-contained item returns None
@@ -65,7 +61,6 @@ def test_search():
 
 
 def test_remove():
-    from linked_list import LinkedList
     items = list(range(10))
     a_list = LinkedList(items)
     # removing a value that isn't in it should return false

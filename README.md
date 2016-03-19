@@ -2,6 +2,25 @@
 
 ## This project contains sample code for implementing the following structures:
 
+### Binary Heap
+
+This data structure, Heap, is a specialized tree-based data structure that 
+satisfies the heap property: If A is a parent node of B then the key of 
+node A is ordered with respect to the key of node B with the same ordering 
+applying across the heap. Fills from left to right. There are minHeap 
+and maxHeap alternatives.
+
+### Priority Queue
+
+This data structure, a priority queue, is an abstract data type which is like a regular queue or stack data structure, 
+but where additionally each element has a "priority" associated with it.
+
+### Deque
+
+This data structure, Deque (usually pronounced like "deck"), is an irregular acronym of double-ended 
+queue. Double-ended queues are sequence containers with dynamic sizes that can be expanded or 
+contracted on both ends (either its FRONT(head) or REAR(tail)).
+
 ### Queue
 
 This data structure, a Queue, is an abstract data type or a linear data structure, in which the first element is 
@@ -25,3 +44,10 @@ or pop(), removing an item from the stack.
 
 This data structure has an ordered set of data elements (nodes), each containing a link to its successor and a piece of data.
 
+## *Interview Challenge: Proper Parenthetics*
+
+Takes a unicode string proper_paren(text) as input and returns one of three possible values:
+
+> Return 1 if the string is “open” (there are open parens that are not closed)
+> Return 0 if the string is “balanced” (there are an equal number of open and closed parentheses in the string)
+> Return -1 if the string is “broken” (a closing parens has not been proceeded by one that opens)
