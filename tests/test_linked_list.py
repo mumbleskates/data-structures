@@ -75,3 +75,12 @@ def test_remove():
         if node & 1 == 0:
             assert a_list.remove(a_list.search(node)) is True
     assert list(a_list) == [9, 5, 3, 1]
+
+
+@pytest.mark.parametrize("items", CONSTRUCTOR_LISTS)
+def test_display(items, capfd):
+    a_list = LinkedList(items)
+    a_list.display()
+    out, err = capfd.readouterr()
+    assert out == str(tuple(reversed(items))) + '\n'
+    assert not err
