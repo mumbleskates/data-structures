@@ -87,5 +87,6 @@ class LinkedList(object):
     def display(self):
         """Print the contents of the list"""
         print("({})".format(
-            ", ".join(map(repr, self))
+            ", ".join(map(repr, self)) +
+            ("," if self.length == 1 else "")
         ))
