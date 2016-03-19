@@ -3,6 +3,8 @@ from builtins import range
 
 import pytest
 
+from data_structures.binheap import BinHeap
+
 
 TEST_ITEMS = [
     [],
@@ -21,14 +23,12 @@ def assert_correct(heap, expected):
 
 @pytest.mark.parametrize("items", TEST_ITEMS)
 def test_init(items):
-    from binheap import BinHeap
     bh = BinHeap(items)
     assert_correct(bh, items)
 
 
 @pytest.mark.parametrize("items", TEST_ITEMS)
 def test_push(items):
-    from binheap import BinHeap
     bh = BinHeap()
     parallel = []
     for item in items:

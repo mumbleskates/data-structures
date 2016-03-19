@@ -3,6 +3,9 @@ from __future__ import unicode_literals
 
 import pytest
 
+from data_structures.dll import Dll
+
+
 TEST_SET = [
     [],
     [1],
@@ -12,7 +15,6 @@ TEST_SET = [
 
 @pytest.mark.parametrize("items", TEST_SET)
 def test_append(items):
-    from dll import Dll
     t_dll = Dll()
     for item in items:
         t_dll.append(item)
@@ -21,7 +23,6 @@ def test_append(items):
 
 @pytest.mark.parametrize("items", TEST_SET)
 def test_insert(items):
-    from dll import Dll
     t_dll = Dll()
     for item in reversed(items):
         t_dll.insert(item)
@@ -37,7 +38,6 @@ TEST_SET_REMOVE = [
 
 @pytest.mark.parametrize("test_list, remove_me, result", TEST_SET_REMOVE)
 def test_remove(test_list, remove_me, result):
-    from dll import Dll
     t_dll = Dll(test_list)
     t_dll.remove(remove_me)
     assert list(t_dll) == result
@@ -51,7 +51,6 @@ TEST_SET_REMOVE_ABSENT = [
 
 @pytest.mark.parametrize("items, remove_me", TEST_SET_REMOVE_ABSENT)
 def test_remove_absent(items, remove_me):
-    from dll import Dll
     t_dll = Dll(items)
     with pytest.raises(ValueError):
         t_dll.remove(remove_me)
@@ -66,14 +65,12 @@ POP_SHIFT_LISTS = [
 
 @pytest.mark.parametrize("items", POP_SHIFT_LISTS)
 def test_pop(items):
-    from dll import Dll
     t_dll = Dll(items)
     assert t_dll.pop() == items[0]
     assert list(t_dll) == items[1:]
 
 
 def test_pop_empty():
-    from dll import Dll
     t_dll = Dll()
     with pytest.raises(IndexError):
         t_dll.pop()
@@ -81,14 +78,12 @@ def test_pop_empty():
 
 @pytest.mark.parametrize("items", POP_SHIFT_LISTS)
 def test_shift(items):
-    from dll import Dll
     t_dll = Dll(items)
     assert t_dll.shift() == items[-1]
     assert list(t_dll) == items[:-1]
 
 
 def test_shift_empty():
-    from dll import Dll
     t_dll = Dll()
     with pytest.raises(IndexError):
         t_dll.shift()

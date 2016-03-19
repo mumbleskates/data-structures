@@ -5,7 +5,7 @@ import pytest
 
 @pytest.fixture(scope='function')
 def g():
-    from simpleg import Graph
+    from data_structures.simpleg import Graph
     return Graph()
 
 

@@ -4,6 +4,8 @@ from builtins import range
 
 import pytest
 
+from data_structures.deque import Deque
+
 
 def bidirectional_match(a, b):
     assert list(a) == list(b)
@@ -22,14 +24,12 @@ TEST_LISTS = [
 
 @pytest.mark.parametrize("items", TEST_LISTS)
 def test_init(items):
-    from deque import Deque
     d = Deque(items)
     bidirectional_match(d, items)
     assert d.size() == len(items)
 
 
 def test_append():
-    from deque import Deque
     d = Deque()
     expected = []
     for item in range(5):
@@ -39,7 +39,6 @@ def test_append():
 
 
 def test_appendleft():
-    from deque import Deque
     d = Deque()
     expected = []
     for item in range(5):
@@ -49,7 +48,6 @@ def test_appendleft():
 
 
 def test_pop():
-    from deque import Deque
     d = Deque(range(5))
     expected = list(range(5))
     while expected:
@@ -62,7 +60,6 @@ def test_pop():
 
 
 def test_popleft():
-    from deque import Deque
     d = Deque(range(5))
     expected = list(range(5))
     while expected:
@@ -75,7 +72,6 @@ def test_popleft():
 
 
 def test_peek():
-    from deque import Deque
     d = Deque(range(5))
     while d:
         peek = d.peek()
@@ -84,7 +80,6 @@ def test_peek():
 
 
 def test_peekleft():
-    from deque import Deque
     d = Deque(range(5))
     while d:
         peek = d.peekleft()

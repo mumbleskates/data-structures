@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from linked_list import LinkedList
+from .linked_list import LinkedList
 
 
 class Stack(object):

@@ -8,10 +8,10 @@ setup(
     author="Kent Ross, Jeremy Edwards",
     author_email="",
     license="MIT",
-    py_modules=["data_structures"],
+    packages=["data_structures"],
     package_dir={"": "src"},
     install_requires=['future'],
     extras_require={
-        'test': ['pytest', 'tox']
+        'test': ['pytest-cov', 'tox']
     },
 )

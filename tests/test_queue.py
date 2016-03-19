@@ -4,6 +4,8 @@ from builtins import range
 
 import pytest
 
+from data_structures.queue import Queue
+
 
 @pytest.mark.parametrize("params", [
     (),
@@ -12,7 +14,6 @@ import pytest
     ("abc",),
 ])
 def test_init(params):
-    from queue import Queue
     Queue(*params)
 
 
@@ -22,7 +23,6 @@ def test_init(params):
     ([1, 2], 3, 4),
 ])
 def test_bad_init(params):
-    from queue import Queue
     with pytest.raises(TypeError):
         Queue(*params)
 
@@ -37,7 +37,6 @@ LISTS = [
 
 @pytest.mark.parametrize("items", LISTS)
 def test_enqueue(items):
-    from queue import Queue
     q = Queue()
     for item in items:
         q.enqueue(item)
@@ -47,7 +46,6 @@ def test_enqueue(items):
 
 @pytest.mark.parametrize("items", LISTS)
 def test_dequeue(items):
-    from queue import Queue
     q = Queue(items)
     for item in items:
         assert q.dequeue() == item
@@ -56,7 +54,6 @@ def test_dequeue(items):
 
 
 def test_peek():
-    from queue import Queue
     q = Queue(range(4))
     for _ in range(4):
         expected = q.peek()
@@ -66,7 +63,6 @@ def test_peek():
 
 
 def test_size():
-    from queue import Queue
     q = Queue(range(4))
     for expected in range(4, 0, -1):
         assert q.size() == expected
