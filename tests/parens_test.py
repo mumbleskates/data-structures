@@ -17,5 +17,5 @@ STRINGS = [
 
 @pytest.mark.parametrize(("val", "expected"), STRINGS)
 def test_parens(val, expected):
-    from parens import check_parens
+    from data_structures.parens import check_parens
     assert bool(check_parens(val)) == expected
