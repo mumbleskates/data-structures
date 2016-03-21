@@ -62,3 +62,19 @@ class Graph(object):
         _ = self._dict[end]
         # check is end is in the node start set of the, returns KeyError
         return end in self._dict[start]
+
+
+
+    def test_depth_first_traversal(self, g):
+        """
+        Perform a full depth-first traversal of the graph beginning at start.
+        Return the full visited path when traversal is complete.
+        """
+        pass
+
+    def test_breadth_first_traversal(self, g):
+        """
+        Perform a full breadth-first traversal of the graph, beginning at start.
+        Return the full visited path when traversal is complete.
+        """
+        pass
