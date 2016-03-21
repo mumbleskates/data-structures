@@ -94,6 +94,13 @@ def test_adjacent(g):
 
 @pytest.fixture(scope='session')
 def demo_graph():
+    """
+    Build a happy little tree graph:
+          0
+         / \
+        1   2
+       3 4 5 6
+   """
     from data_structures.simpleg import Graph
     g = Graph()
     g.add_edge(0, 1)
@@ -107,8 +114,7 @@ def demo_graph():
 
 def test_depth_first_traversal(demo_graph):
     """
-    Perform a full depth-first traversal of the graph beginning at start.
-    Return the full visited path when traversal is complete.
+    Test to make sure the tree is being traversed in depth first order
     """
     result = list(demo_graph.depth_first_traversal(0))
     assert result[0] == 0
@@ -121,10 +127,9 @@ def test_depth_first_traversal(demo_graph):
     assert len(result) == 7
 
 
-def test_breadth_first_traversal(g):
+def test_breadth_first_traversal(demo_graph):
     """
-    Perform a full breadth-first traversal of the graph, beginning at start.
-    Return the full visited path when traversal is complete.
+    Test to make sure the tree is being traversed in breadth first order
     """
     result = list(demo_graph.depth_first_traversal(0))
     assert result[0] == 0
