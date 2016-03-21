@@ -117,8 +117,8 @@ if __name__ == '__main__':
     from timeit import timeit
 
     def _print_performance():
-        depth = timeit(partial(g.depth_first_traversal, (start,)), number=100000)
-        breadth = timeit(partial(g.breadth_first_traversal, (start,)), number=100000)
+        depth = timeit(partial(g.depth_first_traversal, (start,)), number=1000000)
+        breadth = timeit(partial(g.breadth_first_traversal, (start,)), number=1000000)
         print("Depth first:   {}\n"
               "Breadth first: {}".format(depth, breadth))
         print("depth/breadth: {}".format(depth/breadth))
