@@ -2,6 +2,24 @@
 
 ## This project contains sample code for implementing the following structures:
 
+
+### Graph
+
+Graphs(g) are used to record relationships between things. Popular uses of 
+graphs are mapping, social networks, chemical compounds and electrical 
+circuits.
+
+Supports:
+
+g.depth_first_traversal(start): Perform a full depth-first traversal of 
+the graph beginning at start. Return the full visited path when traversal 
+is complete.
+
+g.breadth_first_traversal(start): Perform a full breadth-first traversal 
+of the graph, beginning at start. Return the full visited path when 
+traversal is complete.
+
+
 ### Binary Heap
 
 This data structure, Heap, is a specialized tree-based data structure that 
@@ -12,8 +30,9 @@ and maxHeap alternatives.
 
 ### Priority Queue
 
-This data structure, a priority queue, is an abstract data type which is like a regular queue or stack data structure, 
-but where additionally each element has a "priority" associated with it.
+This data structure, a priority queue, is an abstract data type which is 
+like a regular queue or stack data structure, but where additionally each 
+element has a "priority" associated with it.
 
 ### Deque
 

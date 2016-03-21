@@ -47,8 +47,8 @@ class Graph(object):
 
     def neighbors(self, n):
         """
-        return the set of all nodes connected to ‘n’ by edges, raises an error
-        if n is not in g
+        return the set of all nodes connected to ‘n’ by edges, raises an
+        error if n is not in g
         """
         # returns a copy so people can't mess with it
         return self._dict[n].copy()
