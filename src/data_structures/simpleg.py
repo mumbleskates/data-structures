@@ -111,18 +111,17 @@ class Graph(object):
                     q.appendleft(neighbor)
 
 
-if __name__ == '__main__':
+def _main():
     from functools import partial
     import json
     from timeit import timeit
 
-    def _print_performance():
+    def print_performance():
         depth = timeit(partial(g.depth_first_traversal, (start,)), number=1000000)
         breadth = timeit(partial(g.breadth_first_traversal, (start,)), number=1000000)
         print("Depth first:   {}\n"
-              "Breadth first: {}".format(depth, breadth))
-        print("depth/breadth: {}".format(depth/breadth))
-
+              "Breadth first: {}\n"
+              "depth/breadth: {}".format(depth, breadth, depth/breadth))
 
     print("Performance tests!")
     start = 0
@@ -135,7 +134,7 @@ if __name__ == '__main__':
                 if child < 12000:
                     g.add_edge(parent, child)
 
-        _print_performance()
+        print_performance()
         print()
 
     print("~12000 nodes in a map-like graph:")
@@ -148,7 +147,7 @@ if __name__ == '__main__':
     for edge in data:
         g.add_edge(edge['from'], edge['to'])
 
-    _print_performance()
+    print_performance()
     print()
 
     print("1000 nodes all connected to each other:")
@@ -158,4 +157,8 @@ if __name__ == '__main__':
             if i != j:
                 g.add_edge(i, j)
 
-    _print_performance()
+    print_performance()
+
+
+if __name__ == '__main__':
+    main()
