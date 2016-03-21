@@ -1,4 +1,9 @@
 # coding=utf-8
+from collections import deque
+
+
+def once(x):
+    yield x
 
 
 class Graph(object):
@@ -63,18 +68,44 @@ class Graph(object):
         # check is end is in the node start set of the, returns KeyError
         return end in self._dict[start]
 
-
-
-    def test_depth_first_traversal(self, g):
+    def depth_first_traversal(self, start):
         """
         Perform a full depth-first traversal of the graph beginning at start.
         Return the full visited path when traversal is complete.
         """
-        pass
+        visited = set()
+        stack = [once(start)]
+        # let's do this without call recursion
+        while stack:
+            current = stack[-1]
 
-    def test_breadth_first_traversal(self, g):
+            # get the next neighbor we haven't visited if there is one
+            try:
+                while True:
+                    node = next(current)
+                    if node not in visited:
+                        break
+            except StopIteration:
+                # this stack frame is exhausted, move back up
+                stack.pop()
+                continue
+
+            # node is now a node we haven't visited yet
+            visited.add(node)
+            yield node
+            stack.append(iter(self.neighbors(node)))
+
+    def breadth_first_traversal(self, start):
         """
         Perform a full breadth-first traversal of the graph, beginning at start.
         Return the full visited path when traversal is complete.
         """
-        pass
+        visited = set()
+        q = deque((start,))
+        while q:
+            node = q.pop()
+            if node not in visited:
+                visited.add(node)
+                yield(node)
+                for neighbor in self.neighbors(node):
+                    q.appendleft(neighbor)
