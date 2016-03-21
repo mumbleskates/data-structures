@@ -92,12 +92,33 @@ def test_adjacent(g):
         g.adjacent(object(), 2)
 
 
-def test_depth_first_traversal(g):
+@pytest.fixture(scope='session')
+def demo_graph():
+    from data_structures.simpleg import Graph
+    g = Graph()
+    g.add_edge(0, 1)
+    g.add_edge(1, 3)
+    g.add_edge(1, 4)
+    g.add_edge(0, 2)
+    g.add_edge(2, 5)
+    g.add_edge(2, 6)
+    return g
+
+
+def test_depth_first_traversal(demo_graph):
     """
     Perform a full depth-first traversal of the graph beginning at start.
     Return the full visited path when traversal is complete.
     """
-    pass
+    result = list(demo_graph.depth_first_traversal(0))
+    assert result[0] == 0
+    assert result[1] in [1, 2]
+    assert result[2] in [3, 4, 5, 6]
+    assert result[3] in [3, 4, 5, 6]
+    assert result[4] in [1, 2]
+    assert result[5] in [3, 4, 5, 6]
+    assert result[6] in [3, 4, 5, 6]
+    assert len(result) == 7
 
 
 def test_breadth_first_traversal(g):
@@ -105,4 +126,12 @@ def test_breadth_first_traversal(g):
     Perform a full breadth-first traversal of the graph, beginning at start.
     Return the full visited path when traversal is complete.
     """
-    pass
+    result = list(demo_graph.depth_first_traversal(0))
+    assert result[0] == 0
+    assert result[1] in [1, 2]
+    assert result[2] in [1, 2]
+    assert result[3] in [3, 4, 5, 6]
+    assert result[4] in [3, 4, 5, 6]
+    assert result[5] in [3, 4, 5, 6]
+    assert result[6] in [3, 4, 5, 6]
+    assert len(result) == 7
