@@ -131,7 +131,7 @@ def test_breadth_first_traversal(demo_graph):
     """
     Test to make sure the tree is being traversed in breadth first order
     """
-    result = list(demo_graph.depth_first_traversal(0))
+    result = list(demo_graph.breadth_first_traversal(0))
     assert result[0] == 0
     assert result[1] in [1, 2]
     assert result[2] in [1, 2]
