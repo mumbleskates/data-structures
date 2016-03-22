@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 import pytest
 
-from data_structures.paren import proper_paren
+from data_structures.edwards_parens import proper_paren
 
 
 PROPER_PAREN_OPEN = [

@@ -115,10 +115,8 @@ def demo_graph():
 @pytest.fixture(scope='session')
 def demo_cycle_graph():
     """
-    Build a happy little tree graph with a cycle:
-          0
-         /
-        1
+    Build a happy little graph with a cycle:
+       0 <==> 1
     """
     from data_structures.simpleg import Graph
     gc = Graph()
@@ -127,7 +125,7 @@ def demo_cycle_graph():
     return gc
 
 
-def test_depth_first_traversal(demo_graph, demo_cycle_graph):
+def test_depth_first_traversal(demo_graph):
     """
     Test to make sure the tree is being traversed in depth first order
     """
@@ -141,12 +139,13 @@ def test_depth_first_traversal(demo_graph, demo_cycle_graph):
     assert result[6] in [3, 4, 5, 6]
     assert len(result) == 7
 
+
+def test_depth_first_traverse_cycle(demo_cycle_graph):
     result_cycle = list(demo_cycle_graph.depth_first_traversal(0))
-    assert result_cycle[0] == 0
-    assert result_cycle[1] == 1
+    assert result_cycle == [0, 1]
 
 
-def test_breadth_first_traversal(demo_graph, demo_cycle_graph):
+def test_breadth_first_traversal(demo_graph):
     """
     Test to make sure the tree is being traversed in breadth first order
     """
@@ -160,9 +159,10 @@ def test_breadth_first_traversal(demo_graph, demo_cycle_graph):
     assert result[6] in [3, 4, 5, 6]
     assert len(result) == 7
 
+
+def test_breadth_first_traverse_cycle(demo_cycle_graph):
     result_cycle = list(demo_cycle_graph.breadth_first_traversal(0))
-    assert result_cycle[0] == 0
-    assert result_cycle[1] == 1
+    assert result_cycle == [0, 1]
 
 
 def _main():
