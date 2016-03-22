@@ -5,9 +5,6 @@ import sys
 from data_structures.simpleg import Graph
 
 
-sys.setrecursionlimit(50000)
-
-
 @pytest.fixture(scope='function')
 def g():
     return Graph()
@@ -220,7 +217,7 @@ def _main():
         bench_performance()
         print()
 
-    print("~12000 nodes in a map-like graph:")
+    print("~12,000 nodes in a map-like graph:")
     # build graph
     g = Graph()
     with open("test_data/graph_data.json", 'r', encoding='utf-8') as f:
@@ -245,12 +242,16 @@ def _main():
     print()
 
     print("--- Recursion vs non-recursive stack ---")
+    print("--- On systems with lower max recursion limits, this may crash out ---")
+
+    sys.setrecursionlimit(50000)
+
     print("Comparison for all-connected graph:")
     bench_recursion()
     print()
 
-    for branch_factor in [1, 2, 10]:
-        print("With tree with 200 nodes, branching factor {}:".format(branch_factor))
+    for branch_factor in [10, 2, 1]:
+        print("Tree with 200 nodes, branching factor {}:".format(branch_factor))
         g = make_branching_graph(200, branch_factor)
         bench_recursion()
         print()
