@@ -1,11 +1,15 @@
 # coding=utf-8
-
 import pytest
+import sys
+
+from data_structures.simpleg import Graph
+
+
+sys.setrecursionlimit(50000)
 
 
 @pytest.fixture(scope='function')
 def g():
-    from data_structures.simpleg import Graph
     return Graph()
 
 
@@ -101,7 +105,6 @@ def demo_graph():
         1   2
        3 4 5 6
    """
-    from data_structures.simpleg import Graph
     g = Graph()
     g.add_edge(0, 1)
     g.add_edge(1, 3)
@@ -118,18 +121,21 @@ def demo_cycle_graph():
     Build a happy little graph with a cycle:
        0 <==> 1
     """
-    from data_structures.simpleg import Graph
     gc = Graph()
     gc.add_edge(0, 1)
     gc.add_edge(1, 0)
     return gc
 
 
-def test_depth_first_traversal(demo_graph):
+DEPTH_FIRST_FUNCTIONS = [Graph.depth_first_traversal, Graph.recursive_depth_first]
+
+
+@pytest.mark.parametrize("function", DEPTH_FIRST_FUNCTIONS)
+def test_depth_first_traversal(demo_graph, function):
     """
     Test to make sure the tree is being traversed in depth first order
     """
-    result = list(demo_graph.depth_first_traversal(0))
+    result = list(function(demo_graph, 0))
     assert result[0] == 0
     assert result[1] in [1, 2]
     assert result[2] in [3, 4, 5, 6]
@@ -140,8 +146,9 @@ def test_depth_first_traversal(demo_graph):
     assert len(result) == 7
 
 
-def test_depth_first_traverse_cycle(demo_cycle_graph):
-    result_cycle = list(demo_cycle_graph.depth_first_traversal(0))
+@pytest.mark.parametrize("function", DEPTH_FIRST_FUNCTIONS)
+def test_depth_first_traverse_cycle(demo_cycle_graph, function):
+    result_cycle = list(function(demo_cycle_graph, 0))
     assert result_cycle == [0, 1]
 
 
@@ -169,14 +176,28 @@ def _main():
     from functools import partial
     import json
     from timeit import timeit
-    from data_structures.simpleg import Graph
+
+    def traverse_all_depth_first(graph, start):
+        for _ in graph.depth_first_traversal(start):
+            pass
+
+    def traverse_all_depth_first_recursive(graph, start):
+        for _ in graph.recursive_depth_first(start):
+            pass
+
+    def traverse_all_breadth_first(graph, start):
+        for _ in graph.breadth_first_traversal(start):
+            pass
 
     def print_performance():
-        depth = timeit(partial(g.depth_first_traversal, (start,)), number=1000000)
-        breadth = timeit(partial(g.breadth_first_traversal, (start,)), number=1000000)
-        print("Depth first:   {}\n"
-              "Breadth first: {}\n"
-              "depth/breadth: {}".format(depth, breadth, depth/breadth))
+        depth = timeit(partial(traverse_all_depth_first, g, start), number=100)
+        breadth = timeit(partial(traverse_all_breadth_first, g, start), number=100)
+        depth_r = timeit(partial(traverse_all_depth_first_recursive, g, start), number=100)
+        print("Depth first:           {}\n"
+              "Breadth first:         {}\n"
+              "Depth first recursive: {}\n"
+              "    depth/breadth:           {}\n"
+              "    recursive/regular depth: {}".format(depth, breadth, depth_r, depth/breadth, depth_r/depth))
 
     print("Performance tests!")
     start = 0
@@ -205,12 +226,14 @@ def _main():
     print_performance()
     print()
 
-    print("1000 nodes all connected to each other:")
+    all_connected_size = 300
+    print("{} nodes all connected to each other:".format(all_connected_size))
     g = Graph()
-    for i in range(1000):
-        for j in range(1000):
+    for i in range(all_connected_size):
+        for j in range(all_connected_size):
             if i != j:
                 g.add_edge(i, j)
+    start = 0
 
     print_performance()
 

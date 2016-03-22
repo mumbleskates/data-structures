@@ -95,6 +95,23 @@ class Graph(object):
             yield node
             stack.append(iter(self.neighbors(node)))
 
+    def recursive_depth_first(self, start):
+        """
+        Like the other depth first traversal, but uses recursion. Maybe more readable.
+        """
+        visited = set()
+        results = []
+
+        def traverse(node):
+            visited.add(node)
+            results.append(node)
+            for neighbor in self.neighbors(node):
+                if neighbor not in visited:
+                    traverse(neighbor)
+
+        traverse(start)
+        return results
+
     def breadth_first_traversal(self, start):
         """
         Perform a full breadth-first traversal of the graph, beginning at start.
