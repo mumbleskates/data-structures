@@ -141,9 +141,9 @@ def test_depth_first_traversal(demo_graph, demo_cycle_graph):
     assert result[6] in [3, 4, 5, 6]
     assert len(result) == 7
 
-    result_loop = list(demo_cycle_graph.depth_first_traversal(0))
-    assert result_loop[0] == 0
-    assert result_loop[1] == 1
+    result_cycle = list(demo_cycle_graph.depth_first_traversal(0))
+    assert result_cycle[0] == 0
+    assert result_cycle[1] == 1
 
 
 def test_breadth_first_traversal(demo_graph, demo_cycle_graph):
@@ -160,9 +160,9 @@ def test_breadth_first_traversal(demo_graph, demo_cycle_graph):
     assert result[6] in [3, 4, 5, 6]
     assert len(result) == 7
 
-    result_loop = list(demo_cycle_graph.breadth_first_traversal(0))
-    assert result_loop[0] == 0
-    assert result_loop[1] == 1
+    result_cycle = list(demo_cycle_graph.breadth_first_traversal(0))
+    assert result_cycle[0] == 0
+    assert result_cycle[1] == 1
 
 
 def _main():
