@@ -182,35 +182,42 @@ def _main():
             pass
 
     def traverse_all_depth_first_recursive(graph, start):
-        for _ in graph.recursive_depth_first(start):
-            pass
+        graph.recursive_depth_first(start)  # returns a list
 
     def traverse_all_breadth_first(graph, start):
         for _ in graph.breadth_first_traversal(start):
             pass
 
-    def print_performance():
+    def bench_performance():
         depth = timeit(partial(traverse_all_depth_first, g, start), number=100)
         breadth = timeit(partial(traverse_all_breadth_first, g, start), number=100)
-        depth_r = timeit(partial(traverse_all_depth_first_recursive, g, start), number=100)
         print("Depth first:           {}\n"
               "Breadth first:         {}\n"
-              "Depth first recursive: {}\n"
-              "    depth/breadth:           {}\n"
-              "    recursive/regular depth: {}".format(depth, breadth, depth_r, depth/breadth, depth_r/depth))
+              "    depth/breadth:           {}\n".format(depth, breadth, depth/breadth))
+
+    def bench_recursion():
+        stack = timeit(partial(traverse_all_depth_first, g, start), number=400)
+        recurse = timeit(partial(traverse_all_depth_first_recursive, g, start), number=400)
+        print("Non-recursive: {}\n"
+              "Recursive:     {}\n"
+              "Recursive/non: {}".format(stack, recurse, recurse/stack))
 
     print("Performance tests!")
     start = 0
-    for branch_factor in [1, 2, 10]:
-        print("12,000 nodes in a tree with branching factor {}".format(branch_factor))
-        # build tree
+
+    def make_branching_graph(size, factor):
         g = Graph()
         for parent in range(int(12000 / branch_factor + 1)):
             for child in (parent * branch_factor + 1 + x for x in range(branch_factor)):
                 if child < 12000:
                     g.add_edge(parent, child)
+        return g
 
-        print_performance()
+    for branch_factor in [1, 2, 10]:
+        print("12,000 nodes in a tree with branching factor {}".format(branch_factor))
+        # build tree
+        g = make_branching_graph(12000, branch_factor)
+        bench_performance()
         print()
 
     print("~12000 nodes in a map-like graph:")
@@ -223,7 +230,7 @@ def _main():
     for edge in data:
         g.add_edge(edge['from'], edge['to'])
 
-    print_performance()
+    bench_performance()
     print()
 
     all_connected_size = 300
@@ -234,8 +241,19 @@ def _main():
             if i != j:
                 g.add_edge(i, j)
     start = 0
+    bench_performance()
+    print()
 
-    print_performance()
+    print("--- Recursion vs non-recursive stack ---")
+    print("Comparison for all-connected graph:")
+    bench_recursion()
+    print()
+
+    for branch_factor in [1, 2, 10]:
+        print("With tree with 400 nodes, branching factor {}:".format(branch_factor))
+        g = make_branching_graph(400, branch_factor)
+        bench_recursion()
+        print()
 
 
 if __name__ == '__main__':

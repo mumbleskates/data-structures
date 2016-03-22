@@ -74,11 +74,10 @@ class Graph(object):
         Return the full visited path when traversal is complete.
         """
         visited = set()
-        stack = [once(start)]
+        stack = []
+        current = once(start)
         # let's do this without call recursion
-        while stack:
-            current = stack[-1]
-
+        while True:
             # get the next neighbor we haven't visited if there is one
             try:
                 while True:
@@ -87,13 +86,17 @@ class Graph(object):
                         break
             except StopIteration:
                 # this stack frame is exhausted, move back up
-                stack.pop()
+                if stack:
+                    current = stack.pop()
+                else:  # we're completely finished
+                    return
                 continue
 
             # node is now a node we haven't visited yet
             visited.add(node)
             yield node
-            stack.append(iter(self.neighbors(node)))
+            stack.append(current)
+            current = iter(self.neighbors(node))
 
     def recursive_depth_first(self, start):
         """
