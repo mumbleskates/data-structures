@@ -196,8 +196,8 @@ def _main():
               "    depth/breadth:           {}\n".format(depth, breadth, depth/breadth))
 
     def bench_recursion():
-        stack = timeit(partial(traverse_all_depth_first, g, start), number=400)
-        recurse = timeit(partial(traverse_all_depth_first_recursive, g, start), number=400)
+        stack = timeit(partial(traverse_all_depth_first, g, start), number=200)
+        recurse = timeit(partial(traverse_all_depth_first_recursive, g, start), number=200)
         print("Non-recursive: {}\n"
               "Recursive:     {}\n"
               "Recursive/non: {}".format(stack, recurse, recurse/stack))
@@ -250,8 +250,8 @@ def _main():
     print()
 
     for branch_factor in [1, 2, 10]:
-        print("With tree with 400 nodes, branching factor {}:".format(branch_factor))
-        g = make_branching_graph(400, branch_factor)
+        print("With tree with 200 nodes, branching factor {}:".format(branch_factor))
+        g = make_branching_graph(200, branch_factor)
         bench_recursion()
         print()
 
