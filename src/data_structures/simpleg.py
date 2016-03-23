@@ -2,10 +2,6 @@
 from collections import deque
 
 
-def once(x):
-    yield x
-
-
 class Graph(object):
     def __init__(self):
         self._dict = {}
@@ -74,29 +70,15 @@ class Graph(object):
         Return the full visited path when traversal is complete.
         """
         visited = set()
-        stack = []
-        current = once(start)
+        stack = [start]
         # let's do this without call recursion
-        while True:
-            # get the next neighbor we haven't visited if there is one
-            try:
-                while True:
-                    node = next(current)
-                    if node not in visited:
-                        break
-            except StopIteration:
-                # this stack frame is exhausted, move back up
-                if stack:
-                    current = stack.pop()
-                else:  # we're completely finished
-                    return
-                continue
-
-            # node is now a node we haven't visited yet
-            visited.add(node)
-            yield node
-            stack.append(current)
-            current = iter(self.neighbors(node))
+        while stack:
+            node = stack.pop()
+            if node not in visited:
+                visited.add(node)
+                yield node
+                for neighbor in self.neighbors(node):
+                    stack.append(neighbor)
 
     def recursive_depth_first(self, start):
         """
