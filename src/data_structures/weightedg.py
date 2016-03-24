@@ -3,14 +3,8 @@ from data_structures.simpleg import Graph
 
 
 class WeightedGraph(Graph):
-    def add_edge(self, start, end, weight=1):
-        """
-        add a new edge to the graph connecting ‘n1’ and ‘n2’, if either n1
-        or n2 are not already present in the graph, they should be added.
-        """
-        self.add_node(start)
-        self.add_node(end)
-        self._dict[start][end] = weight
+    def add_node(self, node):
+        self._dict.setdefault(node, {})
 
     def del_node(self, n):
         """
@@ -22,6 +16,18 @@ class WeightedGraph(Graph):
         # remove any references to n
         for node in self._dict:
             self._dict[node].pop(n)
+
+    def add_edge(self, start, end, weight=1):
+        """
+        add a new edge to the graph connecting ‘n1’ and ‘n2’, if either n1
+        or n2 are not already present in the graph, they should be added.
+        """
+        self.add_node(start)
+        self.add_node(end)
+        self._dict[start][end] = weight
+
+    def del_edge(self, start, end):
+        del self._dict[start][end]
 
     def get_weight(self, start, end):
         """
