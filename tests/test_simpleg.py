@@ -3,21 +3,24 @@ import pytest
 import sys
 
 from data_structures.simpleg import Graph
+from data_structures.weightedg import WeightedGraph
 
 
-@pytest.fixture(scope='function')
-def g():
-    return Graph()
+GRAPH_TYPES = [Graph, WeightedGraph]
 
 
-def test_nodes(g):
+@pytest.mark.parametrize('graphtype', GRAPH_TYPES)
+def test_nodes(graphtype):
+    g = graphtype()
     assert set(g.nodes()) == set()
     for i in range(5):
         g.add_node(i)
     assert set(g.nodes()) == set(range(5))
 
 
-def test_edges(g):
+@pytest.mark.parametrize('graphtype', GRAPH_TYPES)
+def test_edges(graphtype):
+    g = graphtype()
     assert set(g.edges()) == set()
     for i in range(5):
         g.add_edge(i, (i + 1) % 5)
@@ -27,14 +30,18 @@ def test_edges(g):
     }
 
 
-def test_add_node(g):
+@pytest.mark.parametrize('graphtype', GRAPH_TYPES)
+def test_add_node(graphtype):
+    g = graphtype()
     g.add_node(1)
     assert g.nodes() == {1}
     # should not err
     g.add_node(1)
 
 
-def test_add_edge(g):
+@pytest.mark.parametrize('graphtype', GRAPH_TYPES)
+def test_add_edge(graphtype):
+    g = graphtype()
     g.add_edge(1, 2)
     assert g.has_node(1)
     assert g.has_node(2)
@@ -43,7 +50,9 @@ def test_add_edge(g):
     g.add_edge(1, 2)
 
 
-def test_del_node(g):
+@pytest.mark.parametrize('graphtype', GRAPH_TYPES)
+def test_del_node(graphtype):
+    g = graphtype()
     g.add_edge(1, 2)
     assert g.has_node(2)
     g.del_node(2)
@@ -54,7 +63,9 @@ def test_del_node(g):
     assert 2 not in g.neighbors(1)
 
 
-def test_del_edge(g):
+@pytest.mark.parametrize('graphtype', GRAPH_TYPES)
+def test_del_edge(graphtype):
+    g = graphtype()
     g.add_edge(1, 2)
     assert g.adjacent(1, 2)
     g.del_edge(1, 2)
@@ -65,13 +76,17 @@ def test_del_edge(g):
         g.del_edge(object(), 2)
 
 
-def test_has_node(g):
+@pytest.mark.parametrize('graphtype', GRAPH_TYPES)
+def test_has_node(graphtype):
+    g = graphtype()
     assert not g.has_node(1)
     g.add_node(1)
     assert g.has_node(1)
 
 
-def test_neighbors(g):
+@pytest.mark.parametrize('graphtype', GRAPH_TYPES)
+def test_neighbors(graphtype):
+    g = graphtype()
     for i in range(5):
         g.add_node(i)
     for i in range(1, 5):
@@ -81,7 +96,9 @@ def test_neighbors(g):
         g.neighbors(object())
 
 
-def test_adjacent(g):
+@pytest.mark.parametrize('graphtype', GRAPH_TYPES)
+def test_adjacent(graphtype):
+    g = graphtype()
     g.add_node(0)
     g.add_edge(1, 2)
     assert g.adjacent(1, 2)
@@ -91,6 +108,19 @@ def test_adjacent(g):
         g.adjacent(1, object())
     with pytest.raises(KeyError):
         g.adjacent(object(), 2)
+
+
+def test_wg_get_weight():
+    g = WeightedGraph()
+    g.add_edge(1, 2, 3)
+    assert g.get_weight(1, 2) == 3
+
+
+def test_wg_edges_with_weights():
+    g = WeightedGraph()
+    g.add_edge(1, 2, 3)
+    g.add_edge(4, 5)
+    assert g.edges_with_weights() == {(1, 2, 3), (4, 5, 1)}
 
 
 @pytest.fixture(scope='session')
@@ -174,15 +204,15 @@ def _main():
     import json
     from timeit import timeit
 
-    def traverse_all_depth_first(graph, start):
-        for _ in graph.depth_first_traversal(start):
+    def traverse_all_depth_first(graph, start_node):
+        for _ in graph.depth_first_traversal(start_node):
             pass
 
-    def traverse_all_depth_first_recursive(graph, start):
-        graph.recursive_depth_first(start)  # returns a list
+    def traverse_all_depth_first_recursive(graph, start_node):
+        graph.recursive_depth_first(start_node)  # returns a list
 
-    def traverse_all_breadth_first(graph, start):
-        for _ in graph.breadth_first_traversal(start):
+    def traverse_all_breadth_first(graph, start_node):
+        for _ in graph.breadth_first_traversal(start_node):
             pass
 
     def bench_performance():
@@ -193,8 +223,8 @@ def _main():
               "    depth/breadth:           {}\n".format(depth, breadth, depth/breadth))
 
     def bench_recursion():
-        stack = timeit(partial(traverse_all_depth_first, g, start), number=200)
-        recurse = timeit(partial(traverse_all_depth_first_recursive, g, start), number=200)
+        stack = timeit(partial(traverse_all_depth_first, g, start), number=400)
+        recurse = timeit(partial(traverse_all_depth_first_recursive, g, start), number=400)
         print("Non-recursive: {}\n"
               "Recursive:     {}\n"
               "Recursive/non: {}".format(stack, recurse, recurse/stack))
@@ -204,9 +234,9 @@ def _main():
 
     def make_branching_graph(size, factor):
         g = Graph()
-        for parent in range(int(12000 / branch_factor + 1)):
-            for child in (parent * branch_factor + 1 + x for x in range(branch_factor)):
-                if child < 12000:
+        for parent in range(int(size / factor + 1)):
+            for child in (parent * factor + 1 + x for x in range(factor)):
+                if child < size:
                     g.add_edge(parent, child)
         return g
 
