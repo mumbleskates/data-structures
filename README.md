@@ -19,6 +19,20 @@ g.breadth_first_traversal(start): Perform a full breadth-first traversal
 of the graph, beginning at start. Return the full visited path when 
 traversal is complete.
 
+g.dijkstra_traversal(start, end): An algorithm for finding the shortest 
+paths between nodes in a graph, which may represent, for example, road networks.
+
+g.bellman_ford(vertex): An algorithm that computes shortest paths from a 
+single source vertex to all of the other vertices in a weighted digraph.
+
+It is slower than Dijkstra's algorithm for the same graph, but more 
+versatile, as it is capable of handling graphs in which some of the edge 
+weights are negative numbers. 
+
+This example walks a graph from a set vertex and sets each vertex
+with a previous vertex and weight. It then returns a dictionary of all the 
+vertices that you can then use to walk back to the provided vertex along the
+smallest weighted path.
 
 ### Binary Heap
 
