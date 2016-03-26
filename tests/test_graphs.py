@@ -260,7 +260,7 @@ def bellman_graph():
 
 
 def test_bellman_ford(bellman_graph):
-    assert bellman_graph.bellman_ford(1) == {
+    assert bellman_graph.bellman_ford(1) == ({
         1: 0,
         2: 100,
         3: 1,
@@ -269,7 +269,7 @@ def test_bellman_ford(bellman_graph):
         2: 1,
         3: 1,
         4: 2
-    }
+    })
 
 
 def _main():
