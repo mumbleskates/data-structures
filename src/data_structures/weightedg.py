@@ -66,6 +66,25 @@ class WeightedGraph(Graph):
                     heappush(heap, (cumulative_weight + edge_weight, next(unique), neighbor, path))
         return None, []
 
+    def bellman_ford(self, start):
+        """
+        Walk the graph and set a node with a (previous node and weight)
+        results in a dict of all the nodes that you can walk back to a
+        previous of the best path
+        """
+        previous = {}
+        distance = {node: float("inf") for node in self.nodes()}
+        distance[start] = 0
+        for _ in range(1, len(self._dict)):
+            for node, neighbor, weight in self.edges_with_weights():
+                if distance[neighbor] > (distance[node] + weight):
+                    previous[neighbor] = node
+                    distance[neighbor] = distance[node] + weight
+        return distance, previous
+
+
+
+
 
 def _convert_path(path):
     """Convert a reverse linked tuple path (3, (2, (1, ()))) to a forwards list [1, 2, 3]."""

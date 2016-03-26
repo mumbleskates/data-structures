@@ -248,6 +248,30 @@ def test_dijkstra_traversal(pathing_graph, start, end, expected):
     assert pathing_graph.dijkstra_traversal(start, end) == expected
 
 
+@pytest.fixture(scope='session')
+def bellman_graph():
+    g = WeightedGraph()
+    g.add_edge(1, 2, 100)
+    g.add_edge(1, 3, 1)
+    g.add_edge(2, 4, -99)
+    g.add_edge(3, 4, 1)
+
+    return g
+
+
+def test_bellman_ford(bellman_graph):
+    assert bellman_graph.bellman_ford(1) == {
+        1: 0,
+        2: 100,
+        3: 1,
+        4: 1
+    }, {
+        2: 1,
+        3: 1,
+        4: 2
+    }
+
+
 def _main():
     from functools import partial
     import json
