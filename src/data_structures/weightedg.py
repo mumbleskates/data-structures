@@ -6,13 +6,15 @@ from data_structures.simpleg import Graph
 
 
 class WeightedGraph(Graph):
+    """Weighted graph data structure. Has nodes and edges between its nodes that have weights, typically the cost of
+    traversing the edge. """
+
     def add_node(self, node):
         self._dict.setdefault(node, {})
 
     def del_node(self, n):
         """
-        delete the node ‘n’ from the graph, raises an error if no such node
-        exists
+        delete the node ‘n’ from the graph; raises a KeyError if no such node exists
         """
         # remove the node
         self._dict.pop(n)
@@ -22,8 +24,9 @@ class WeightedGraph(Graph):
 
     def add_edge(self, start, end, weight=1):
         """
-        add a new edge to the graph connecting ‘n1’ and ‘n2’, if either n1
-        or n2 are not already present in the graph, they should be added.
+        add a new edge to the graph connecting ‘n1’ and ‘n2’.
+
+        If either n1 or n2 are not already present in the graph, they will be added.
         """
         self.add_node(start)
         self.add_node(end)
@@ -33,14 +36,12 @@ class WeightedGraph(Graph):
         del self._dict[start][end]
 
     def get_weight(self, start, end):
-        """
-        Returns a weight for a given edge defined by start end
-        """
+        """Returns a weight for a given edge defined by start and end. Raise a KeyError if the edge does not exist."""
         return self._dict[start][end]
 
     def edges_with_weights(self):
         """
-        return a set of all edges in the graph with weights
+        return a set of all edges in the graph with their weights as tuples in the format (from, to, weight)
         """
         return set(
             (node, neighbor, weight)
@@ -52,6 +53,14 @@ class WeightedGraph(Graph):
         return self._dict[node].items()
 
     def dijkstra_traversal(self, start, end):
+        """
+        Returns a tuple of the total distance and the path taken to travel from the given start to end in the graph.
+
+        The value returned is a 2-tuple of (cumulative distance, a list of nodes visited in order).
+
+        If the given start does not exist in the graph, a KeyError is raised. If there is no path from start to end
+        in the graph, the cumulative weight will be None and the path returned will be empty.
+        """
         unique = count()
         visited = set()
         heap = [(0, None, start, ())]
@@ -68,9 +77,9 @@ class WeightedGraph(Graph):
 
     def bellman_ford(self, start):
         """
-        Walk the graph and set a node with a (previous node and weight)
-        results in a dict of all the nodes that you can walk back to a
-        previous of the best path
+        Resolve all distances from the given start node to any other pathable node in the graph and return a tuple of
+        2 dictionaries: a dictionary of all pathable nodes and the total distance of their shortest paths,
+        and another that shows, for each node in these shortest paths, the previous step in
         """
         previous = {}
         distance = {node: float("inf") for node in self.nodes()}
@@ -80,10 +89,10 @@ class WeightedGraph(Graph):
                 if distance[neighbor] > (distance[node] + weight):
                     previous[neighbor] = node
                     distance[neighbor] = distance[node] + weight
+        for node, neighbor, weight in self.edges_with_weights():
+            if distance[node] + weight < distance[neighbor]:
+                raise ValueError("Negative-weight cycle detected in graph")
         return distance, previous
-
-
-
 
 
 def _convert_path(path):
