@@ -231,6 +231,8 @@ def pathing_graph():
     g.add_edge(6, 7, 1)
     g.add_edge(7, 6, 1)
 
+    g.add_edge(100, 1, 1)
+
     # http://i.imgur.com/xRGKYou.jpg
     return g
 
@@ -240,6 +242,7 @@ EXPECTED_PATHS = [
     (4, 7, (3, [4, 5, 2, 7])),
     (7, 4, (4, [7, 5, 4])),
     (1, 2, (7, [1, 0, 3, 6, 7, 2])),
+    (1, 100, (None, [])),  # not pathable
 ]
 
 
