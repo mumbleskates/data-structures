@@ -5,6 +5,41 @@ from itertools import count
 from data_structures.simpleg import Graph
 
 
+class _GreatestValueCls(object):
+    """
+    The sole instance of this class always sorts before any other object, and is only equivalent to itself.
+    """
+    __slots__ = ()
+
+    def __gt__(self, other):
+        return True
+
+    __ge__ = __gt__
+
+    def __eq__(self, other):
+        return other is _GreatestValue
+
+    __le__ = __eq__
+
+    def __lt__(self, other):
+        return False
+
+    def __str__(self):
+        return "<Greatest value>"
+
+    def __repr__(self):
+        return "GreatestValue"
+
+    __hash__ = object.__hash__
+
+    def __add__(self, other):
+        return self
+
+    __radd__ = __add__
+
+_GreatestValue = _GreatestValueCls()
+
+
 class WeightedGraph(Graph):
     """Weighted graph data structure. Has nodes and edges between its nodes that have weights, typically the cost of
     traversing the edge. """
@@ -24,10 +59,15 @@ class WeightedGraph(Graph):
 
     def add_edge(self, start, end, weight=1):
         """
-        add a new edge to the graph connecting ‘n1’ and ‘n2’.
+        add a new edge to the graph connecting ‘n1’ and ‘n2’. Weights must be summable and comparable, like numbers.
 
         If either n1 or n2 are not already present in the graph, they will be added.
         """
+        try:
+            0 < 0 + weight < 0 + weight + weight
+        except TypeError:
+            raise TypeError("Edge weights must be comparable and summable from zero!")
+
         self.add_node(start)
         self.add_node(end)
         self._dict[start][end] = weight
@@ -82,7 +122,7 @@ class WeightedGraph(Graph):
         and another that shows, for each node in these shortest paths, the previous step in
         """
         previous = {}
-        distance = {node: float("inf") for node in self.nodes()}
+        distance = {node: _GreatestValue for node in self.nodes()}
         distance[start] = 0
         for _ in range(1, len(self._dict)):
             for node, neighbor, weight in self.edges_with_weights():

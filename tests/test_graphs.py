@@ -50,6 +50,20 @@ def test_add_edge(graphtype):
     g.add_edge(1, 2)
 
 
+BAD_WEIGHTS = [
+    None,
+    "abc",
+    (1,),
+]
+
+
+@pytest.mark.parametrize('weight', BAD_WEIGHTS)
+def test_add_edge_fail(weight):
+    g = WeightedGraph()
+    with pytest.raises(TypeError):
+        g.add_edge(0, 1, weight)
+
+
 @pytest.mark.parametrize('graphtype', GRAPH_TYPES)
 def test_del_node(graphtype):
     g = graphtype()
