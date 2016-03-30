@@ -2,7 +2,7 @@
 from __future__ import unicode_literals, print_function
 from builtins import next
 
-from dll import Dll
+from .dll import Dll
 
 
 class Queue(object):

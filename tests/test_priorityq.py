@@ -3,6 +3,8 @@ from builtins import range
 
 import pytest
 
+from data_structures.priorityq import PriorityQ
+
 
 TEST_ITEMS = [
     [],
@@ -22,7 +24,6 @@ def assert_correct(priorityq, expected):
 
 @pytest.mark.parametrize("items", TEST_ITEMS)
 def test_init(items):
-    from priorityq import PriorityQ
     pq = PriorityQ()
     for priority, item in items:
         pq.insert(item, priority)
@@ -36,7 +37,6 @@ TEST_PRIORITY = [
 
 @pytest.mark.parametrize("items, output", TEST_PRIORITY)
 def test_insert(items, output):
-    from priorityq import PriorityQ
     pq = PriorityQ()
     for priority, item in items:
         pq.insert(item, priority)
@@ -52,7 +52,6 @@ PRIORITY_ORDERS = [
 
 @pytest.mark.parametrize("priorities", PRIORITY_ORDERS)
 def test_pop(priorities):
-    from priorityq import PriorityQ
     pq = PriorityQ()
     inserted = {}  # dictionary of item:priority
     for pri in priorities:
@@ -76,7 +75,6 @@ def test_pop(priorities):
 
 @pytest.mark.parametrize("priorities", PRIORITY_ORDERS)
 def test_peek(priorities):
-    from priorityq import PriorityQ
     pq = PriorityQ()
     for pri in priorities:
         pq.insert(object(), pri)

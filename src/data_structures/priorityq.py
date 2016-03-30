@@ -1,7 +1,7 @@
 # coding=utf-8
-
-from binheap import BinHeap
 from itertools import count
+
+from .binheap import BinHeap
 
 
 class PriorityQ(object):
