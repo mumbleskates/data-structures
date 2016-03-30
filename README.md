@@ -2,6 +2,12 @@
 
 ## This project contains sample code for implementing the following structures:
 
+### Deque
+
+This data structure, Deque (usually pronounced like "deck"), is an irregular acronym of double-ended 
+queue. Double-ended queues are sequence containers with dynamic sizes that can be expanded or 
+contracted on both ends (either its FRONT(head) or REAR(tail)).
+
 ### Queue
 
 This data structure, a Queue, is an abstract data type or a linear data structure, in which the first element is 
