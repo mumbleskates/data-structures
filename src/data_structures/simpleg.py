@@ -1,4 +1,5 @@
 # coding=utf-8
+from collections import deque
 
 
 class Graph(object):
@@ -47,8 +48,8 @@ class Graph(object):
 
     def neighbors(self, n):
         """
-        return the set of all nodes connected to ‘n’ by edges, raises an error
-        if n is not in g
+        return the set of all nodes connected to ‘n’ by edges, raises an
+        error if n is not in g
         """
         # returns a copy so people can't mess with it
         return self._dict[n].copy()
@@ -62,3 +63,51 @@ class Graph(object):
         _ = self._dict[end]
         # check is end is in the node start set of the, returns KeyError
         return end in self._dict[start]
+
+    def depth_first_traversal(self, start):
+        """
+        Perform a full depth-first traversal of the graph beginning at start.
+        Return the full visited path when traversal is complete.
+        """
+        visited = set()
+        stack = [start]
+        # let's do this without call recursion
+        while stack:
+            node = stack.pop()
+            if node not in visited:
+                visited.add(node)
+                yield node
+                for neighbor in self.neighbors(node):
+                    stack.append(neighbor)
+
+    def recursive_depth_first(self, start):
+        """
+        Like the other depth first traversal, but uses recursion. Maybe more readable.
+        """
+        visited = set()
+        results = []
+
+        def traverse(node):
+            visited.add(node)
+            results.append(node)
+            for neighbor in self.neighbors(node):
+                if neighbor not in visited:
+                    traverse(neighbor)
+
+        traverse(start)
+        return results
+
+    def breadth_first_traversal(self, start):
+        """
+        Perform a full breadth-first traversal of the graph, beginning at start.
+        Return the full visited path when traversal is complete.
+        """
+        visited = set()
+        q = deque((start,))
+        while q:
+            node = q.pop()
+            if node not in visited:
+                visited.add(node)
+                yield(node)
+                for neighbor in self.neighbors(node):
+                    q.appendleft(neighbor)
