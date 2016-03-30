@@ -60,3 +60,6 @@ class BinHeap(object):
             self._list[pos] = val
 
         return return_value
+
+    def peek(self):
+        return self._list[0]
