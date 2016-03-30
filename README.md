@@ -40,3 +40,10 @@ or pop(), removing an item from the stack.
 
 This data structure has an ordered set of data elements (nodes), each containing a link to its successor and a piece of data.
 
+## *Interview Challenge: Proper Parenthetics*
+
+Takes a unicode string proper_paren(text) as input and returns one of three possible values:
+
+> Return 1 if the string is “open” (there are open parens that are not closed)
+> Return 0 if the string is “balanced” (there are an equal number of open and closed parentheses in the string)
+> Return -1 if the string is “broken” (a closing parens has not been proceeded by one that opens)
