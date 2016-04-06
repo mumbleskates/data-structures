@@ -2,6 +2,17 @@
 from __future__ import unicode_literals
 
 
+__doc__ = """\
+Binary Search Tree module
+
+Provides an implementation of a binary search tree. Runtime complexities
+are as follows:
+
+insert, contains: O(log(n)) generally, O(n) worst case
+size: O(1)
+depth, balance: O(n)"""
+
+
 class _BSTNode(object):
     def __init__(self, value):
         self._left = None
@@ -46,6 +57,16 @@ class _BSTNode(object):
     def __len__(self):
         return self._len
 
+    def __iter__(self):
+        if self._left:
+            for item in self._left:
+                yield item
+        yield self._val
+        if self._right:
+            for item in self._right:
+                yield item
+
+
     def depth(self):
         left_depth = self._left.depth() if self._left else 0
         right_depth = self._right.depth() if self._right else 0
@@ -85,6 +106,11 @@ class BST(object):
 
     __contains__ = contains
 
+    def __iter__(self):
+        if self._head:
+            for item in self._head:
+                yield item
+
     def size(self):
         """
         Return the number of items in the tree
@@ -112,3 +138,7 @@ class BST(object):
             return self._head.balance()
         else:
             return 0
+
+
+if __name__ == '__main__':
+    print(__doc__)

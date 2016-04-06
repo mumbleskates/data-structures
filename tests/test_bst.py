@@ -91,3 +91,9 @@ def test_depth(items, expected):
 def test_balance(items, expected):
     bst = BST(items)
     assert bst.balance() == expected
+
+
+@pytest.mark.parametrize('items', TREE_ITEMS)
+def test_iterate(items):
+    bst = BST(items)
+    assert list(bst) == sorted(items)
