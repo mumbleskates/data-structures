@@ -50,6 +50,20 @@ def test_add_edge(graphtype):
     g.add_edge(1, 2)
 
 
+BAD_WEIGHTS = [
+    None,
+    "abc",
+    (1,),
+]
+
+
+@pytest.mark.parametrize('weight', BAD_WEIGHTS)
+def test_add_edge_fail(weight):
+    g = WeightedGraph()
+    with pytest.raises(TypeError):
+        g.add_edge(0, 1, weight)
+
+
 @pytest.mark.parametrize('graphtype', GRAPH_TYPES)
 def test_del_node(graphtype):
     g = graphtype()
@@ -199,6 +213,82 @@ def test_breadth_first_traverse_cycle(demo_cycle_graph):
     assert result_cycle == [0, 1]
 
 
+@pytest.fixture(scope='session')
+def pathing_graph():
+    g = WeightedGraph()
+    g.add_edge(0, 1, 3)
+    g.add_edge(1, 0, 3)
+
+    g.add_edge(0, 2, 5)
+    g.add_edge(2, 0, 5)
+
+    g.add_edge(0, 3, 1)
+    g.add_edge(3, 0, 1)
+
+    g.add_edge(1, 4, 6)
+    g.add_edge(4, 1, 6)
+
+    g.add_edge(2, 7, 1)
+    g.add_edge(7, 2, 1)
+
+    g.add_edge(3, 6, 1)
+    g.add_edge(6, 3, 1)
+
+    g.add_edge(4, 5, 1)
+    g.add_edge(5, 4, 1)
+
+    g.add_edge(5, 2, 1)
+
+    g.add_edge(5, 7, 3)
+    g.add_edge(7, 5, 3)
+
+    g.add_edge(6, 7, 1)
+    g.add_edge(7, 6, 1)
+
+    g.add_edge(100, 1, 1)
+
+    # http://i.imgur.com/xRGKYou.jpg
+    return g
+
+
+EXPECTED_PATHS = [
+    (0, 4, (7, [0, 3, 6, 7, 5, 4])),
+    (4, 7, (3, [4, 5, 2, 7])),
+    (7, 4, (4, [7, 5, 4])),
+    (1, 2, (7, [1, 0, 3, 6, 7, 2])),
+    (1, 100, (None, [])),  # not pathable
+]
+
+
+@pytest.mark.parametrize(('start', 'end', 'expected'), EXPECTED_PATHS)
+def test_dijkstra_traversal(pathing_graph, start, end, expected):
+    assert pathing_graph.dijkstra_traversal(start, end) == expected
+
+
+@pytest.fixture(scope='session')
+def bellman_graph():
+    g = WeightedGraph()
+    g.add_edge(1, 2, 100)
+    g.add_edge(1, 3, 1)
+    g.add_edge(2, 4, -99)
+    g.add_edge(3, 4, 1)
+
+    return g
+
+
+def test_bellman_ford(bellman_graph):
+    assert bellman_graph.bellman_ford(1) == ({
+        1: 0,
+        2: 100,
+        3: 1,
+        4: 1
+    }, {
+        2: 1,
+        3: 1,
+        4: 2
+    })
+
+
 def _main():
     from functools import partial
     import json
@@ -223,8 +313,8 @@ def _main():
               "    depth/breadth:           {}\n".format(depth, breadth, depth/breadth))
 
     def bench_recursion():
-        stack = timeit(partial(traverse_all_depth_first, g, start), number=400)
-        recurse = timeit(partial(traverse_all_depth_first_recursive, g, start), number=400)
+        stack = timeit(partial(traverse_all_depth_first, g, start), number=200)
+        recurse = timeit(partial(traverse_all_depth_first_recursive, g, start), number=200)
         print("Non-recursive: {}\n"
               "Recursive:     {}\n"
               "Recursive/non: {}".format(stack, recurse, recurse/stack))
@@ -281,8 +371,8 @@ def _main():
     print()
 
     for branch_factor in [10, 2, 1]:
-        print("Tree with 200 nodes, branching factor {}:".format(branch_factor))
-        g = make_branching_graph(200, branch_factor)
+        print("Tree with 2000 nodes, branching factor {}:".format(branch_factor))
+        g = make_branching_graph(2000, branch_factor)
         bench_recursion()
         print()
 
