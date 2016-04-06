@@ -128,10 +128,26 @@ class BST(object):
 
     __contains__ = contains
 
-    def __iter__(self):
+    def in_order(self):
+        """Traverse the tree in-order."""
         if self._head:
-            for item in self._head:
+            for item in self._head.in_order():
                 yield item
+
+    __iter__ = in_order
+
+    def pre_order(self):
+        """Traverse the tree pre-order."""
+        if self._head:
+            for item in self._head.pre_order():
+                yield item
+
+    def post_order(self):
+        """Traverse the tree post-order."""
+        if self._head:
+            for item in self._head.post_order():
+                yield item
+
 
     def size(self):
         """
