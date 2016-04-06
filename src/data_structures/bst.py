@@ -57,7 +57,8 @@ class _BSTNode(object):
     def __len__(self):
         return self._len
 
-    def __iter__(self):
+    def in_order(self):
+        """Traverse the subtree in-order."""
         if self._left:
             for item in self._left:
                 yield item
@@ -66,6 +67,25 @@ class _BSTNode(object):
             for item in self._right:
                 yield item
 
+    def pre_order(self):
+        """Traverse the subtree pre-order."""
+        yield self._val
+        if self._left:
+            for item in self._left:
+                yield item
+        if self._right:
+            for item in self._right:
+                yield item
+
+    def post_order(self):
+        """Traverse the subtree post-order."""
+        if self._left:
+            for item in self._left:
+                yield item
+        if self._right:
+            for item in self._right:
+                yield item
+        yield self._val
 
     def depth(self):
         left_depth = self._left.depth() if self._left else 0
@@ -79,6 +99,8 @@ class _BSTNode(object):
 
 
 class BST(object):
+    """Binary Search Tree."""
+
     def __init__(self, items=()):
         """
         Create a new tree.
@@ -113,7 +135,7 @@ class BST(object):
 
     def size(self):
         """
-        Return the number of items in the tree
+        Return the number of items in the tree.
         """
         return len(self._head) if self._head else 0
 
@@ -121,7 +143,7 @@ class BST(object):
 
     def depth(self):
         """
-        Return the depth of the tree's lowest leaf node
+        Return the depth of the tree's lowest leaf node.
         """
         if self._head:
             return self._head.depth()
