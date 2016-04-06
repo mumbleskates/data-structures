@@ -1,6 +1,8 @@
 # coding=utf-8
 from __future__ import unicode_literals
 
+from collections import deque
+
 
 __doc__ = """\
 Binary Search Tree module
@@ -148,6 +150,17 @@ class BST(object):
             for item in self._head.post_order():
                 yield item
 
+    def breadth_first(self):
+        """Traverse the tree breadth-first."""
+        if self._head:
+            q = deque((self._head,))
+            while q:
+                node = q.pop()
+                yield node.val
+                if node._left:
+                    q.appendleft(node._left)
+                if node._right:
+                    q.appendleft(node._right)
 
     def size(self):
         """
