@@ -47,13 +47,13 @@ class _BSTNode(object):
         return self._len
 
     def depth(self):
-        left_depth = self._left.depth if self._left else 0
-        right_depth = self._right.depth if self._right else 0
+        left_depth = self._left.depth() if self._left else 0
+        right_depth = self._right.depth() if self._right else 0
         return 1 + max(left_depth, right_depth)
 
     def balance(self):
-        left_depth = self._left.depth if self._left else 0
-        right_depth = self._right.depth if self._right else 0
+        left_depth = self._left.depth() if self._left else 0
+        right_depth = self._right.depth() if self._right else 0
         return left_depth - right_depth
 
 
