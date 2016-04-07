@@ -13,7 +13,28 @@ TREE_ITEMS = [
     [2, 1],
     [12, 5, 9, 137, 42, 13, 28],
 ]
-
+TREE_INORDER = list(map(sorted, TREE_ITEMS))
+TREE_PREORDER = [
+    [],
+    [1],
+    [1, 2],
+    [2, 1],
+    [12, 5, 9, 137, 42, 13, 28],
+]
+TREE_POSTORDER = [
+    [],
+    [1],
+    [2, 1],
+    [1, 2],
+    [9, 5, 28, 13, 42, 137, 12],
+]
+TREE_BREADTHFIRST = [
+    [],
+    [1],
+    [1, 2],
+    [2, 1],
+    [12, 5, 137, 9, 42, 13, 28],
+]
 TREE_EXPECTED_SIZE = [
     0,
     1,
@@ -21,7 +42,6 @@ TREE_EXPECTED_SIZE = [
     2,
     7,
 ]
-
 TREE_EXPECTED_DEPTH = [
     0,
     1,
@@ -29,7 +49,6 @@ TREE_EXPECTED_DEPTH = [
     2,
     5,
 ]
-
 TREE_EXPECTED_BALANCE = [
     0,
     0,
@@ -37,6 +56,11 @@ TREE_EXPECTED_BALANCE = [
     1,
     -2,
 ]
+
+
+@pytest.fixture(scope='session')
+def bigtree():
+    return BST([12, 5, 9, 137, 42, 13, 28])
 
 
 @pytest.mark.parametrize('items', TREE_ITEMS)
@@ -93,7 +117,25 @@ def test_balance(items, expected):
     assert bst.balance() == expected
 
 
-@pytest.mark.parametrize('items', TREE_ITEMS)
-def test_iterate(items):
+@pytest.mark.parametrize('items, expected', zip(TREE_ITEMS, TREE_INORDER))
+def test_inorder(items, expected):
     bst = BST(items)
-    assert list(bst) == sorted(items)
+    assert list(bst.in_order()) == expected
+
+
+@pytest.mark.parametrize('items, expected', zip(TREE_ITEMS, TREE_PREORDER))
+def test_preorder(items, expected):
+    bst = BST(items)
+    assert list(bst.pre_order()) == expected
+
+
+@pytest.mark.parametrize('items, expected', zip(TREE_ITEMS, TREE_POSTORDER))
+def test_postorder(items, expected):
+    bst = BST(items)
+    assert list(bst.post_order()) == expected
+
+
+@pytest.mark.parametrize('items, expected', zip(TREE_ITEMS, TREE_BREADTHFIRST))
+def test_breadthfirst(items, expected):
+    bst = BST(items)
+    assert list(bst.breadth_first()) == expected

@@ -62,30 +62,30 @@ class _BSTNode(object):
     def in_order(self):
         """Traverse the subtree in-order."""
         if self._left:
-            for item in self._left:
+            for item in self._left.in_order():
                 yield item
         yield self._val
         if self._right:
-            for item in self._right:
+            for item in self._right.in_order():
                 yield item
 
     def pre_order(self):
         """Traverse the subtree pre-order."""
         yield self._val
         if self._left:
-            for item in self._left:
+            for item in self._left.pre_order():
                 yield item
         if self._right:
-            for item in self._right:
+            for item in self._right.pre_order():
                 yield item
 
     def post_order(self):
         """Traverse the subtree post-order."""
         if self._left:
-            for item in self._left:
+            for item in self._left.post_order():
                 yield item
         if self._right:
-            for item in self._right:
+            for item in self._right.post_order():
                 yield item
         yield self._val
 
@@ -156,7 +156,7 @@ class BST(object):
             q = deque((self._head,))
             while q:
                 node = q.pop()
-                yield node.val
+                yield node._val
                 if node._left:
                     q.appendleft(node._left)
                 if node._right:
