@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/Mumbleskates/data-structures.svg?branch=master)](https://travis-ci.org/Mumbleskates/data-structures)
+[![Coverage Status](https://coveralls.io/repos/github/Mumbleskates/data-structures/badge.svg?branch=master)](https://coveralls.io/github/Mumbleskates/data-structures?branch=master)
+
 
 # data-structures
 
