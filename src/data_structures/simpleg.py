@@ -109,6 +109,6 @@ class Graph(object):
             node = q.pop()
             if node not in visited:
                 visited.add(node)
-                yield(node)
+                yield node
                 for neighbor in self.neighbors(node):
                     q.appendleft(neighbor)
