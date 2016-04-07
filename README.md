@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Mumbleskates/data-structures.svg?branch=master)](https://travis-ci.org/Mumbleskates/data-structures)
+
 # data-structures
 
 ## This project contains sample code for implementing the following structures:
