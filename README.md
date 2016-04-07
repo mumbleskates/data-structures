@@ -3,7 +3,9 @@
 ## This project contains sample code for implementing the following structures:
 
 ### Binary Search Tree
-A Python implementation of a Binary Search Tree (BST). The value of each node in the BST is greater than the values stored in its left sub-tree, and smaller than the values in its right sub-tree.
+A Python implementation of a Binary Search Tree (BST). The value of each node in the BST is greater than the values stored in its left sub-tree, and smaller than the values in its right sub-tree. 
+The BST has four traveral patterns: in-order, pre-order, post-order, and breadth-first.
+
 
 ### Graph
 
