@@ -4,3 +4,6 @@ python: "3.5"
 install: "pip install -e .[test]"
 # command to run tests
 script: tox
+# coverage
+after_success:
+  - coveralls
