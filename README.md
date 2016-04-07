@@ -1,9 +1,15 @@
+[![Build Status](https://travis-ci.org/Mumbleskates/data-structures.svg?branch=master)](https://travis-ci.org/Mumbleskates/data-structures)
+[![Coverage Status](https://coveralls.io/repos/github/Mumbleskates/data-structures/badge.svg?branch=master)](https://coveralls.io/github/Mumbleskates/data-structures?branch=master)
+
+
 # data-structures
 
 ## This project contains sample code for implementing the following structures:
 
 ### Binary Search Tree
-A Python implementation of a Binary Search Tree (BST). The value of each node in the BST is greater than the values stored in its left sub-tree, and smaller than the values in its right sub-tree.
+A Python implementation of a Binary Search Tree (BST). The value of each node in the BST is greater than the values stored in its left sub-tree, and smaller than the values in its right sub-tree. 
+The BST has four traveral patterns: in-order, pre-order, post-order, and breadth-first.
+
 
 ### Graph
 
