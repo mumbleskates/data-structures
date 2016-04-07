@@ -1,6 +1,8 @@
 # coding=utf-8
 from __future__ import unicode_literals
 
+from collections import deque
+
 
 __doc__ = """\
 Binary Search Tree module
@@ -57,7 +59,8 @@ class _BSTNode(object):
     def __len__(self):
         return self._len
 
-    def __iter__(self):
+    def in_order(self):
+        """Traverse the subtree in-order."""
         if self._left:
             for item in self._left:
                 yield item
@@ -66,6 +69,25 @@ class _BSTNode(object):
             for item in self._right:
                 yield item
 
+    def pre_order(self):
+        """Traverse the subtree pre-order."""
+        yield self._val
+        if self._left:
+            for item in self._left:
+                yield item
+        if self._right:
+            for item in self._right:
+                yield item
+
+    def post_order(self):
+        """Traverse the subtree post-order."""
+        if self._left:
+            for item in self._left:
+                yield item
+        if self._right:
+            for item in self._right:
+                yield item
+        yield self._val
 
     def depth(self):
         left_depth = self._left.depth() if self._left else 0
@@ -79,6 +101,8 @@ class _BSTNode(object):
 
 
 class BST(object):
+    """Binary Search Tree."""
+
     def __init__(self, items=()):
         """
         Create a new tree.
@@ -106,14 +130,41 @@ class BST(object):
 
     __contains__ = contains
 
-    def __iter__(self):
+    def in_order(self):
+        """Traverse the tree in-order."""
         if self._head:
-            for item in self._head:
+            for item in self._head.in_order():
                 yield item
+
+    __iter__ = in_order
+
+    def pre_order(self):
+        """Traverse the tree pre-order."""
+        if self._head:
+            for item in self._head.pre_order():
+                yield item
+
+    def post_order(self):
+        """Traverse the tree post-order."""
+        if self._head:
+            for item in self._head.post_order():
+                yield item
+
+    def breadth_first(self):
+        """Traverse the tree breadth-first."""
+        if self._head:
+            q = deque((self._head,))
+            while q:
+                node = q.pop()
+                yield node.val
+                if node._left:
+                    q.appendleft(node._left)
+                if node._right:
+                    q.appendleft(node._right)
 
     def size(self):
         """
-        Return the number of items in the tree
+        Return the number of items in the tree.
         """
         return len(self._head) if self._head else 0
 
@@ -121,7 +172,7 @@ class BST(object):
 
     def depth(self):
         """
-        Return the depth of the tree's lowest leaf node
+        Return the depth of the tree's lowest leaf node.
         """
         if self._head:
             return self._head.depth()
