@@ -2,6 +2,8 @@
 
 ## This project contains sample code for implementing the following structures:
 
+### Binary Search Tree
+A Python implementation of a Binary Search Tree (BST). The value of each node in the BST is greater than the values stored in its left sub-tree, and smaller than the values in its right sub-tree.
 
 ### Graph
 
@@ -19,6 +21,24 @@ g.breadth_first_traversal(start): Perform a full breadth-first traversal
 of the graph, beginning at start. Return the full visited path when 
 traversal is complete.
 
+### WeightedGraph
+
+A subclass of the above which can optionally store and provide weights for each
+edge. This class also supports shortest-path traversals for graphs with and without
+negative edge weights.
+
+g.dijkstra_traversal(start, end): An algorithm for finding the shortest 
+paths between nodes in a graph, which may represent, for example, road networks.
+
+g.bellman_ford(node): An algorithm that computes shortest paths from a 
+single source node to all of the other nodes in the graph. Slower than Dijkstra's 
+algorithm for the same graph, but more versatile, as it is capable of handling graphs
+in which some of the edge weights are negative numbers. 
+
+This example walks a graph from a set vertex and sets each vertex
+with a previous vertex and weight. It then returns a dictionary of all the 
+vertices that you can then use to walk back to the provided vertex along the
+smallest weighted path.
 
 ### Binary Heap
 

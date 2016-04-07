@@ -3,21 +3,24 @@ import pytest
 import sys
 
 from data_structures.simpleg import Graph
+from data_structures.weightedg import WeightedGraph
 
 
-@pytest.fixture(scope='function')
-def g():
-    return Graph()
+GRAPH_TYPES = [Graph, WeightedGraph]
 
 
-def test_nodes(g):
+@pytest.mark.parametrize('graphtype', GRAPH_TYPES)
+def test_nodes(graphtype):
+    g = graphtype()
     assert set(g.nodes()) == set()
     for i in range(5):
         g.add_node(i)
     assert set(g.nodes()) == set(range(5))
 
 
-def test_edges(g):
+@pytest.mark.parametrize('graphtype', GRAPH_TYPES)
+def test_edges(graphtype):
+    g = graphtype()
     assert set(g.edges()) == set()
     for i in range(5):
         g.add_edge(i, (i + 1) % 5)
@@ -27,14 +30,18 @@ def test_edges(g):
     }
 
 
-def test_add_node(g):
+@pytest.mark.parametrize('graphtype', GRAPH_TYPES)
+def test_add_node(graphtype):
+    g = graphtype()
     g.add_node(1)
     assert g.nodes() == {1}
     # should not err
     g.add_node(1)
 
 
-def test_add_edge(g):
+@pytest.mark.parametrize('graphtype', GRAPH_TYPES)
+def test_add_edge(graphtype):
+    g = graphtype()
     g.add_edge(1, 2)
     assert g.has_node(1)
     assert g.has_node(2)
@@ -43,7 +50,23 @@ def test_add_edge(g):
     g.add_edge(1, 2)
 
 
-def test_del_node(g):
+BAD_WEIGHTS = [
+    None,
+    "abc",
+    (1,),
+]
+
+
+@pytest.mark.parametrize('weight', BAD_WEIGHTS)
+def test_add_edge_fail(weight):
+    g = WeightedGraph()
+    with pytest.raises(TypeError):
+        g.add_edge(0, 1, weight)
+
+
+@pytest.mark.parametrize('graphtype', GRAPH_TYPES)
+def test_del_node(graphtype):
+    g = graphtype()
     g.add_edge(1, 2)
     assert g.has_node(2)
     g.del_node(2)
@@ -54,7 +77,9 @@ def test_del_node(g):
     assert 2 not in g.neighbors(1)
 
 
-def test_del_edge(g):
+@pytest.mark.parametrize('graphtype', GRAPH_TYPES)
+def test_del_edge(graphtype):
+    g = graphtype()
     g.add_edge(1, 2)
     assert g.adjacent(1, 2)
     g.del_edge(1, 2)
@@ -65,13 +90,17 @@ def test_del_edge(g):
         g.del_edge(object(), 2)
 
 
-def test_has_node(g):
+@pytest.mark.parametrize('graphtype', GRAPH_TYPES)
+def test_has_node(graphtype):
+    g = graphtype()
     assert not g.has_node(1)
     g.add_node(1)
     assert g.has_node(1)
 
 
-def test_neighbors(g):
+@pytest.mark.parametrize('graphtype', GRAPH_TYPES)
+def test_neighbors(graphtype):
+    g = graphtype()
     for i in range(5):
         g.add_node(i)
     for i in range(1, 5):
@@ -81,7 +110,9 @@ def test_neighbors(g):
         g.neighbors(object())
 
 
-def test_adjacent(g):
+@pytest.mark.parametrize('graphtype', GRAPH_TYPES)
+def test_adjacent(graphtype):
+    g = graphtype()
     g.add_node(0)
     g.add_edge(1, 2)
     assert g.adjacent(1, 2)
@@ -91,6 +122,19 @@ def test_adjacent(g):
         g.adjacent(1, object())
     with pytest.raises(KeyError):
         g.adjacent(object(), 2)
+
+
+def test_wg_get_weight():
+    g = WeightedGraph()
+    g.add_edge(1, 2, 3)
+    assert g.get_weight(1, 2) == 3
+
+
+def test_wg_edges_with_weights():
+    g = WeightedGraph()
+    g.add_edge(1, 2, 3)
+    g.add_edge(4, 5)
+    assert g.edges_with_weights() == {(1, 2, 3), (4, 5, 1)}
 
 
 @pytest.fixture(scope='session')
@@ -169,20 +213,96 @@ def test_breadth_first_traverse_cycle(demo_cycle_graph):
     assert result_cycle == [0, 1]
 
 
+@pytest.fixture(scope='session')
+def pathing_graph():
+    g = WeightedGraph()
+    g.add_edge(0, 1, 3)
+    g.add_edge(1, 0, 3)
+
+    g.add_edge(0, 2, 5)
+    g.add_edge(2, 0, 5)
+
+    g.add_edge(0, 3, 1)
+    g.add_edge(3, 0, 1)
+
+    g.add_edge(1, 4, 6)
+    g.add_edge(4, 1, 6)
+
+    g.add_edge(2, 7, 1)
+    g.add_edge(7, 2, 1)
+
+    g.add_edge(3, 6, 1)
+    g.add_edge(6, 3, 1)
+
+    g.add_edge(4, 5, 1)
+    g.add_edge(5, 4, 1)
+
+    g.add_edge(5, 2, 1)
+
+    g.add_edge(5, 7, 3)
+    g.add_edge(7, 5, 3)
+
+    g.add_edge(6, 7, 1)
+    g.add_edge(7, 6, 1)
+
+    g.add_edge(100, 1, 1)
+
+    # http://i.imgur.com/xRGKYou.jpg
+    return g
+
+
+EXPECTED_PATHS = [
+    (0, 4, (7, [0, 3, 6, 7, 5, 4])),
+    (4, 7, (3, [4, 5, 2, 7])),
+    (7, 4, (4, [7, 5, 4])),
+    (1, 2, (7, [1, 0, 3, 6, 7, 2])),
+    (1, 100, (None, [])),  # not pathable
+]
+
+
+@pytest.mark.parametrize(('start', 'end', 'expected'), EXPECTED_PATHS)
+def test_dijkstra_traversal(pathing_graph, start, end, expected):
+    assert pathing_graph.dijkstra_traversal(start, end) == expected
+
+
+@pytest.fixture(scope='session')
+def bellman_graph():
+    g = WeightedGraph()
+    g.add_edge(1, 2, 100)
+    g.add_edge(1, 3, 1)
+    g.add_edge(2, 4, -99)
+    g.add_edge(3, 4, 1)
+
+    return g
+
+
+def test_bellman_ford(bellman_graph):
+    assert bellman_graph.bellman_ford(1) == ({
+        1: 0,
+        2: 100,
+        3: 1,
+        4: 1
+    }, {
+        2: 1,
+        3: 1,
+        4: 2
+    })
+
+
 def _main():
     from functools import partial
     import json
     from timeit import timeit
 
-    def traverse_all_depth_first(graph, start):
-        for _ in graph.depth_first_traversal(start):
+    def traverse_all_depth_first(graph, start_node):
+        for _ in graph.depth_first_traversal(start_node):
             pass
 
-    def traverse_all_depth_first_recursive(graph, start):
-        graph.recursive_depth_first(start)  # returns a list
+    def traverse_all_depth_first_recursive(graph, start_node):
+        graph.recursive_depth_first(start_node)  # returns a list
 
-    def traverse_all_breadth_first(graph, start):
-        for _ in graph.breadth_first_traversal(start):
+    def traverse_all_breadth_first(graph, start_node):
+        for _ in graph.breadth_first_traversal(start_node):
             pass
 
     def bench_performance():
@@ -204,9 +324,9 @@ def _main():
 
     def make_branching_graph(size, factor):
         g = Graph()
-        for parent in range(int(12000 / branch_factor + 1)):
-            for child in (parent * branch_factor + 1 + x for x in range(branch_factor)):
-                if child < 12000:
+        for parent in range(int(size / factor + 1)):
+            for child in (parent * factor + 1 + x for x in range(factor)):
+                if child < size:
                     g.add_edge(parent, child)
         return g
 
@@ -251,8 +371,8 @@ def _main():
     print()
 
     for branch_factor in [10, 2, 1]:
-        print("Tree with 200 nodes, branching factor {}:".format(branch_factor))
-        g = make_branching_graph(200, branch_factor)
+        print("Tree with 2000 nodes, branching factor {}:".format(branch_factor))
+        g = make_branching_graph(2000, branch_factor)
         bench_recursion()
         print()
 
