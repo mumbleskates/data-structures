@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from collections import deque
 
 
-__doc__ = """\
+"""\
 Binary Search Tree module
 
 Provides an implementation of a binary search tree. Runtime complexities
@@ -189,7 +189,3 @@ class BST(object):
             return self._head.balance()
         else:
             return 0
-
-
-if __name__ == '__main__':
-    print(__doc__)
