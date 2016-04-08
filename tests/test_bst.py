@@ -155,9 +155,11 @@ def test_breadthfirst(items, expected):
 @pytest.mark.parametrize('item', BIGTREE_ITEMS)
 def test_delete_success(item):
     bst = BST(BIGTREE_ITEMS)
+    before_length = len(bst)
     assert item in bst
     bst.delete(item)
     assert item not in bst
+    assert len(bst) == before_length - 1
 
 
 @pytest.mark.parametrize('items', TREE_ITEMS)
@@ -166,3 +168,34 @@ def test_delete_noop(items):
     before_length = len(bst)
     bst.delete(-1)
     assert len(bst) == before_length
+
+
+def test_tree_lengths_rigorously():
+    """Some (fuzz?) testing to ensure that nodes probably always hold the
+    correct length of their sub-trees"""
+    import random
+    items = list(range(50))
+    random.shuffle(items)
+    bst = BST(items[:25])
+
+    # generator that yields all nodes in a sub-tree
+    def tree_nodes(node):
+        yield node
+        if node.left:
+            for x in tree_nodes(node.left):
+                yield x
+        if node.right:
+            for x in tree_nodes(node.right):
+                yield x
+
+    def check_correct_lengths():
+        for node in tree_nodes(bst._head):
+            assert len(node) == sum(1 for n in tree_nodes(node))
+
+    check_correct_lengths()
+
+    for _ in range(50):
+        bst.insert(random.randint(0, 49))
+        check_correct_lengths()
+        bst.delete(random.randint(0, 49))
+        check_correct_lengths()

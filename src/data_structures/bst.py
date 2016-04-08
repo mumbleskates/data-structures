@@ -126,13 +126,18 @@ class _BSTNode(object):
         else:
             return self
 
-    def max_node(self):
-        if self.right:
-            return self.right.max_node()
-        else:
-            return self
+    # We are only pulling node values from the right-hand tree on deletion,
+    # so this code is unused
+
+    #  def max_node(self):
+    #     if self.right:
+    #         return self.right.max_node()
+    #     else:
+    #         return self
 
     def replace(self, replace_with):
+        """Replace this node in its parent with the given node/None, cutting
+        it out of the tree"""
         if self.parent:
             if self.parent.left is self:
                 self.parent.left = replace_with
@@ -147,6 +152,7 @@ class _BSTNode(object):
                 next_node = self.right.min_node()
                 self.val = next_node.val
                 next_node.drop()
+                return  # this node is not being removed, don't update lengths twice
             else:
                 # left child only
                 self.replace(self.left)
@@ -158,7 +164,16 @@ class _BSTNode(object):
                 # leaf node
                 self.replace(None)
 
+        # if we reach here, we have removed this node from the tree
+        # and must propagate the reduced length upwards
+        parent = self.parent
+        while parent:
+            parent.len_ -= 1
+            parent = parent.parent
+
     def remove_val(self, val):
+        """Remove the node containing the given value from the tree if it
+        exists."""
         # if this node holds the value, remove it
         if self.val == val:
             self.drop()
