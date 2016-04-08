@@ -289,6 +289,27 @@ def test_bellman_ford(bellman_graph):
     })
 
 
+def test_bellman_ford_negative_cycle():
+    g = WeightedGraph()
+    g.add_edge(1, 2, 1)
+    g.add_edge(1, 100, 100)
+    g.add_edge(100, 2, 1)
+    g.add_edge(100, 101, -1)
+    g.add_edge(101, 100, -1)
+
+    with pytest.raises(ValueError):
+        g.bellman_ford(1)
+
+
+def test_greatest_value():
+    from data_structures.weightedg import _GreatestValue as gv
+    assert float('inf') < gv
+    assert not float('inf') > gv
+    assert gv > float('inf')
+    assert not gv < float('inf')
+    assert gv == gv
+
+
 def _main():
     from functools import partial
     import json
