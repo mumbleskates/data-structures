@@ -120,6 +120,47 @@ class _BSTNode(object):
         right_depth = self.right.depth() if self.right else 0
         return left_depth - right_depth
 
+    def min_node(self):
+        if self.left:
+            return self.left.min_node()
+        else:
+            return self
+
+    def max_node(self):
+        if self.right:
+            return self.right.max_node()
+        else:
+            return self
+
+    def replace(self, replace_with):
+        if self.parent:
+            if self.parent.left is self:
+                self.parent.left = replace_with
+            else:
+                self.parent.right = replace_with
+
+    def drop(self):
+        if self.left:
+            if self.right:
+                next_node = self.right.min_node()
+                self.val = next_node.val
+                next_node.drop()  # both children
+            else:
+                self.replace(self.left)  # left child only
+        else:
+            if self.right:
+                self.replace(self.right)  # right child only
+            else:
+                self.replace(None)  # leaf node
+
+    def remove_val(self, val):
+        if self.val == val:
+            self.drop()
+        elif val < self.val:
+            self.left and self.left.remove_val(val)  # recurse to find the value
+        else:
+            self.right and self.right.remove_val(val)
+
 
 class BST(object):
     """Binary Search Tree."""
@@ -142,6 +183,11 @@ class BST(object):
             self._head.insert(item)
         else:
             self._head = _BSTNode(item)
+
+    def delete(self, item):
+        """Delete an item from the BST if it exists."""
+        if self._head:
+            self._head.remove_val(item)
 
     def contains(self, item):
         """
