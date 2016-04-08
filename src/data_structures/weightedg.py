@@ -24,9 +24,6 @@ class _GreatestValueCls(object):
     def __lt__(self, other):
         return False
 
-    def __repr__(self):
-        return "<Greatest value>"
-
     __hash__ = object.__hash__
 
     def __add__(self, other):

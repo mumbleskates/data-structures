@@ -5,13 +5,24 @@ import pytest
 
 from data_structures.bst import BST
 
+# Our big-ish tree, constructed naiively, is shaped like so:
+#            12
+#          /    \
+#        5       137
+#         \      /
+#          9   42
+#             /
+#            13
+#             \
+#              28
 
+BIGTREE_ITEMS = [12, 5, 9, 137, 42, 13, 28]
 TREE_ITEMS = [
     [],
     [1],
     [1, 2],
     [2, 1],
-    [12, 5, 9, 137, 42, 13, 28],
+    BIGTREE_ITEMS,
 ]
 TREE_INORDER = list(map(sorted, TREE_ITEMS))
 TREE_PREORDER = [
@@ -60,7 +71,7 @@ TREE_EXPECTED_BALANCE = [
 
 @pytest.fixture(scope='session')
 def bigtree():
-    return BST([12, 5, 9, 137, 42, 13, 28])
+    return BST(BIGTREE_ITEMS)
 
 
 @pytest.mark.parametrize('items', TREE_ITEMS)
@@ -139,3 +150,52 @@ def test_postorder(items, expected):
 def test_breadthfirst(items, expected):
     bst = BST(items)
     assert list(bst.breadth_first()) == expected
+
+
+@pytest.mark.parametrize('item', BIGTREE_ITEMS)
+def test_delete_success(item):
+    bst = BST(BIGTREE_ITEMS)
+    before_length = len(bst)
+    assert item in bst
+    bst.delete(item)
+    assert item not in bst
+    assert len(bst) == before_length - 1
+
+
+@pytest.mark.parametrize('items', TREE_ITEMS)
+def test_delete_noop(items):
+    bst = BST(items)
+    before_length = len(bst)
+    bst.delete(-1)
+    assert len(bst) == before_length
+
+
+def test_tree_lengths_rigorously():
+    """Some (fuzz?) testing to ensure that nodes probably always hold the
+    correct length of their sub-trees"""
+    import random
+    items = list(range(50))
+    random.shuffle(items)
+    bst = BST(items[:25])
+
+    # generator that yields all nodes in a sub-tree
+    def tree_nodes(node):
+        yield node
+        if node.left:
+            for x in tree_nodes(node.left):
+                yield x
+        if node.right:
+            for x in tree_nodes(node.right):
+                yield x
+
+    def check_correct_lengths():
+        for node in tree_nodes(bst._head):
+            assert len(node) == sum(1 for n in tree_nodes(node))
+
+    check_correct_lengths()
+
+    for _ in range(50):
+        bst.insert(random.randint(0, 49))
+        check_correct_lengths()
+        bst.delete(random.randint(0, 49))
+        check_correct_lengths()
