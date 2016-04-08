@@ -56,11 +56,12 @@ TREE_EXPECTED_BALANCE = [
     1,
     -2,
 ]
+BIGTREE_ITEMS = [12, 5, 9, 137, 42, 13, 28]
 
 
 @pytest.fixture(scope='session')
 def bigtree():
-    return BST([12, 5, 9, 137, 42, 13, 28])
+    return BST(BIGTREE_ITEMS)
 
 
 @pytest.mark.parametrize('items', TREE_ITEMS)
@@ -139,3 +140,18 @@ def test_postorder(items, expected):
 def test_breadthfirst(items, expected):
     bst = BST(items)
     assert list(bst.breadth_first()) == expected
+
+
+@pytest.mark.parametrize('item', BIGTREE_ITEMS)
+def test_delete_success(item, bigtree):
+    assert item in bigtree
+    bigtree.delete(item)
+    assert item not in bigtree
+
+
+@pytest.mark.parametrize('items', TREE_ITEMS)
+def test_delete_noop(items):
+    bst = BST(items)
+    before_length = len(bst)
+    bst.delete(-1)
+    assert len(bst) == before_length
