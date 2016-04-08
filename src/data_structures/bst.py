@@ -177,11 +177,11 @@ class BST(object):
             q = deque((self._head,))
             while q:
                 node = q.pop()
-                yield node._val
-                if node._left:
-                    q.appendleft(node._left)
-                if node._right:
-                    q.appendleft(node._right)
+                yield node.val
+                if node.left:
+                    q.appendleft(node.left)
+                if node.right:
+                    q.appendleft(node.right)
 
     def size(self):
         """
