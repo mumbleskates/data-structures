@@ -140,26 +140,36 @@ class _BSTNode(object):
                 self.parent.right = replace_with
 
     def drop(self):
+        """Delete this node from the tree"""
         if self.left:
             if self.right:
+                # both children
                 next_node = self.right.min_node()
                 self.val = next_node.val
-                next_node.drop()  # both children
+                next_node.drop()
             else:
-                self.replace(self.left)  # left child only
+                # left child only
+                self.replace(self.left)
         else:
             if self.right:
-                self.replace(self.right)  # right child only
+                # right child only
+                self.replace(self.right)
             else:
-                self.replace(None)  # leaf node
+                # leaf node
+                self.replace(None)
 
     def remove_val(self, val):
+        # if this node holds the value, remove it
         if self.val == val:
             self.drop()
+
+        # otherwise recurse down to find the value
         elif val < self.val:
-            self.left and self.left.remove_val(val)  # recurse to find the value
+            if self.left:
+                self.left.remove_val(val)
         else:
-            self.right and self.right.remove_val(val)
+            if self.right:
+                self.right.remove_val(val)
 
 
 class BST(object):
@@ -176,9 +186,7 @@ class BST(object):
             self.insert(item)
 
     def insert(self, item):
-        """
-        Insert an item into the BST. If it is already present, ignore.
-        """
+        """Insert an item into the BST. If it is already present, ignore."""
         if self._head:
             self._head.insert(item)
         else:
@@ -190,9 +198,7 @@ class BST(object):
             self._head.remove_val(item)
 
     def contains(self, item):
-        """
-        Return True if the given item is in the tree.
-        """
+        """Return True if the given item is in the tree."""
         return self._head and item in self._head
 
     __contains__ = contains
@@ -230,17 +236,14 @@ class BST(object):
                     q.appendleft(node.right)
 
     def size(self):
-        """
-        Return the number of items in the tree.
-        """
+        """Return the number of items in the tree."""
+        # noinspection PyTypeChecker
         return len(self._head) if self._head else 0
 
     __len__ = size
 
     def depth(self):
-        """
-        Return the depth of the tree's lowest leaf node.
-        """
+        """Return the depth of the tree's lowest leaf node."""
         if self._head:
             return self._head.depth()
         else:

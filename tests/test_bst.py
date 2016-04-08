@@ -5,13 +5,24 @@ import pytest
 
 from data_structures.bst import BST
 
+# Our big-ish tree, constructed naiively, is shaped like so:
+#            12
+#          /    \
+#        5       137
+#         \      /
+#          9   42
+#             /
+#            13
+#             \
+#              28
 
+BIGTREE_ITEMS = [12, 5, 9, 137, 42, 13, 28]
 TREE_ITEMS = [
     [],
     [1],
     [1, 2],
     [2, 1],
-    [12, 5, 9, 137, 42, 13, 28],
+    BIGTREE_ITEMS,
 ]
 TREE_INORDER = list(map(sorted, TREE_ITEMS))
 TREE_PREORDER = [
@@ -56,7 +67,6 @@ TREE_EXPECTED_BALANCE = [
     1,
     -2,
 ]
-BIGTREE_ITEMS = [12, 5, 9, 137, 42, 13, 28]
 
 
 @pytest.fixture(scope='session')
@@ -143,10 +153,11 @@ def test_breadthfirst(items, expected):
 
 
 @pytest.mark.parametrize('item', BIGTREE_ITEMS)
-def test_delete_success(item, bigtree):
-    assert item in bigtree
-    bigtree.delete(item)
-    assert item not in bigtree
+def test_delete_success(item):
+    bst = BST(BIGTREE_ITEMS)
+    assert item in bst
+    bst.delete(item)
+    assert item not in bst
 
 
 @pytest.mark.parametrize('items', TREE_ITEMS)
