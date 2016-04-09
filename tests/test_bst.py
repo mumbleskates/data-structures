@@ -22,6 +22,7 @@ TREE_ITEMS = [
     [1],
     [1, 2],
     [2, 1],
+    [1, 0, 2],
     BIGTREE_ITEMS,
 ]
 TREE_INORDER = list(map(sorted, TREE_ITEMS))
@@ -30,6 +31,7 @@ TREE_PREORDER = [
     [1],
     [1, 2],
     [2, 1],
+    [1, 0, 2],
     [12, 5, 9, 137, 42, 13, 28],
 ]
 TREE_POSTORDER = [
@@ -37,6 +39,7 @@ TREE_POSTORDER = [
     [1],
     [2, 1],
     [1, 2],
+    [0, 2, 1],
     [9, 5, 28, 13, 42, 137, 12],
 ]
 TREE_BREADTHFIRST = [
@@ -44,6 +47,7 @@ TREE_BREADTHFIRST = [
     [1],
     [1, 2],
     [2, 1],
+    [1, 0, 2],
     [12, 5, 137, 9, 42, 13, 28],
 ]
 TREE_EXPECTED_SIZE = [
@@ -51,11 +55,13 @@ TREE_EXPECTED_SIZE = [
     1,
     2,
     2,
+    3,
     7,
 ]
 TREE_EXPECTED_DEPTH = [
     0,
     1,
+    2,
     2,
     2,
     5,
@@ -65,6 +71,7 @@ TREE_EXPECTED_BALANCE = [
     0,
     -1,
     1,
+    0,
     -2,
 ]
 
