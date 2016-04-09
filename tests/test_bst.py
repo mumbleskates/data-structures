@@ -190,9 +190,11 @@ def test_tree_lengths_rigorously():
     def tree_nodes(node):
         yield node
         if node.left:
+            assert node.left.parent is node
             for x in tree_nodes(node.left):
                 yield x
         if node.right:
+            assert node.right.parent is node
             for x in tree_nodes(node.right):
                 yield x
 
