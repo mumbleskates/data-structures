@@ -152,14 +152,15 @@ def test_breadthfirst(items, expected):
     assert list(bst.breadth_first()) == expected
 
 
-@pytest.mark.parametrize('item', BIGTREE_ITEMS)
-def test_delete_success(item):
-    bst = BST(BIGTREE_ITEMS)
-    before_length = len(bst)
-    assert item in bst
-    bst.delete(item)
-    assert item not in bst
-    assert len(bst) == before_length - 1
+@pytest.mark.parametrize('items', TREE_ITEMS)
+def test_delete_success(items):
+    for item in items:
+        bst = BST(items)
+        before_length = len(bst)
+        assert item in bst
+        bst.delete(item)
+        assert item not in bst
+        assert len(bst) == before_length - 1
 
 
 @pytest.mark.parametrize('items', TREE_ITEMS)
@@ -190,7 +191,7 @@ def test_tree_lengths_rigorously():
 
     def check_correct_lengths():
         for node in tree_nodes(bst._head):
-            assert len(node) == sum(1 for n in tree_nodes(node))
+            assert len(node) == sum(1 for _ in tree_nodes(node))
 
     check_correct_lengths()
 
