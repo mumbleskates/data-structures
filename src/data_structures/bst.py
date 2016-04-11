@@ -135,56 +135,70 @@ class _BSTNode(object):
     #     else:
     #         return self
 
-    def replace(self, replace_with):
-        """Replace this node in its parent with the given node/None, cutting
-        it out of the tree"""
-        if self.parent:
-            if self.parent.left is self:
-                self.parent.left = replace_with
-            else:
-                self.parent.right = replace_with
-
     def drop(self):
-        """Delete this node from the tree"""
+        """
+        Delete this node's value from the tree.
+
+        Return the node that should go in this node's place, whether it is still
+        this node or another that is being moved upwards.
+        """
         if self.left:
             if self.right:
                 # both children
                 next_node = self.right.min_node()
+                # steal the value of the next node in order
                 self.val = next_node.val
-                next_node.drop()
-                return  # this node is not being removed, don't update lengths twice
+                # since we have stolen next_node's value and it can be quickly removed,
+                # remove it from the tree by replacing it in its parent
+                if next_node.parent.left is next_node:
+                    next_node.parent.left = next_node.drop()
+                else:
+                    next_node.parent.right = next_node.drop()
+
+                # this node is not being removed; exit before we update lengths again
+                return self
             else:
                 # left child only
-                self.replace(self.left)
+                replace_with = self.left
         else:
             if self.right:
                 # right child only
-                self.replace(self.right)
+                replace_with = self.right
             else:
                 # leaf node
-                self.replace(None)
+                replace_with = None
 
-        # if we reach here, we have removed this node from the tree
+        # if we reach here, know this node will be removed from the tree
         # and must propagate the reduced length upwards
         parent = self.parent
         while parent:
             parent.len_ -= 1
             parent = parent.parent
 
+        # finally, return the node that is going to go in this spot
+        return replace_with
+
     def remove_val(self, val):
-        """Remove the node containing the given value from the tree if it
-        exists."""
+        """
+        Remove the node containing the given value from the tree if it
+        exists.
+
+        Return the node that should go in this node's place, whether it is still
+        this node or another that is being moved upwards.
+        """
         # if this node holds the value, remove it
         if self.val == val:
-            self.drop()
+            return self.drop()
 
         # otherwise recurse down to find the value
         elif val < self.val:
             if self.left:
-                self.left.remove_val(val)
+                self.left = self.left.remove_val(val)
+            return self
         else:
             if self.right:
-                self.right.remove_val(val)
+                self.right = self.right.remove_val(val)
+            return self
 
 
 class BST(object):
@@ -210,7 +224,7 @@ class BST(object):
     def delete(self, item):
         """Delete an item from the BST if it exists."""
         if self._head:
-            self._head.remove_val(item)
+            self._head = self._head.remove_val(item)
 
     def contains(self, item):
         """Return True if the given item is in the tree."""

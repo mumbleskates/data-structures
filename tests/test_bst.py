@@ -22,6 +22,7 @@ TREE_ITEMS = [
     [1],
     [1, 2],
     [2, 1],
+    [1, 0, 2],
     BIGTREE_ITEMS,
 ]
 TREE_INORDER = list(map(sorted, TREE_ITEMS))
@@ -30,6 +31,7 @@ TREE_PREORDER = [
     [1],
     [1, 2],
     [2, 1],
+    [1, 0, 2],
     [12, 5, 9, 137, 42, 13, 28],
 ]
 TREE_POSTORDER = [
@@ -37,6 +39,7 @@ TREE_POSTORDER = [
     [1],
     [2, 1],
     [1, 2],
+    [0, 2, 1],
     [9, 5, 28, 13, 42, 137, 12],
 ]
 TREE_BREADTHFIRST = [
@@ -44,6 +47,7 @@ TREE_BREADTHFIRST = [
     [1],
     [1, 2],
     [2, 1],
+    [1, 0, 2],
     [12, 5, 137, 9, 42, 13, 28],
 ]
 TREE_EXPECTED_SIZE = [
@@ -51,11 +55,13 @@ TREE_EXPECTED_SIZE = [
     1,
     2,
     2,
+    3,
     7,
 ]
 TREE_EXPECTED_DEPTH = [
     0,
     1,
+    2,
     2,
     2,
     5,
@@ -65,6 +71,7 @@ TREE_EXPECTED_BALANCE = [
     0,
     -1,
     1,
+    0,
     -2,
 ]
 
@@ -158,14 +165,15 @@ def test_breadthfirst(items, expected):
     assert list(bst.breadth_first()) == expected
 
 
-@pytest.mark.parametrize('item', BIGTREE_ITEMS)
-def test_delete_success(item):
-    bst = BST(BIGTREE_ITEMS)
-    before_length = len(bst)
-    assert item in bst
-    bst.delete(item)
-    assert item not in bst
-    assert len(bst) == before_length - 1
+@pytest.mark.parametrize('items', TREE_ITEMS)
+def test_delete_success(items):
+    for item in items:
+        bst = BST(items)
+        before_length = len(bst)
+        assert item in bst
+        bst.delete(item)
+        assert item not in bst
+        assert len(bst) == before_length - 1
 
 
 @pytest.mark.parametrize('items', TREE_ITEMS)
@@ -188,15 +196,17 @@ def test_tree_lengths_rigorously():
     def tree_nodes(node):
         yield node
         if node.left:
+            assert node.left.parent is node
             for x in tree_nodes(node.left):
                 yield x
         if node.right:
+            assert node.right.parent is node
             for x in tree_nodes(node.right):
                 yield x
 
     def check_correct_lengths():
         for node in tree_nodes(bst._head):
-            assert len(node) == sum(1 for n in tree_nodes(node))
+            assert len(node) == sum(1 for _ in tree_nodes(node))
 
     check_correct_lengths()
 
