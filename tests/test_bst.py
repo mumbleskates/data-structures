@@ -97,6 +97,12 @@ def test_insert_does_nothing():
     assert len(bst) == 7
 
 
+def test_insert_mutable():
+    bst = BST()
+    with pytest.raises(TypeError):
+        bst.insert([])
+
+
 def test_contains():
     items = [12, 5, 9, 137, 42, 13, 28]
     bst = BST(items)

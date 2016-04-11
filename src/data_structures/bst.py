@@ -193,7 +193,6 @@ class BST(object):
     def __init__(self, items=()):
         """
         Create a new tree.
-
         If an iterable is passed, all of its items are added to the tree.
         """
         self._head = None
@@ -202,6 +201,7 @@ class BST(object):
 
     def insert(self, item):
         """Insert an item into the BST. If it is already present, ignore."""
+        hash(item)  # reject mutable items
         if self._head:
             self._head.insert(item)
         else:
