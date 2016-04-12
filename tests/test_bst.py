@@ -1,6 +1,8 @@
 # coding=utf-8
 from __future__ import unicode_literals
+from builtins import open
 
+from itertools import count
 import pytest
 
 from data_structures.bst import BST
@@ -122,6 +124,42 @@ TREE_EXPECTED_BALANCE = [
     0,
     -1,
 ]
+
+
+def get_full_dot(node):
+    """return the tree with root 'self' as a dot graph for visualization"""
+    return "digraph G{{\n{0}}}".format("" if node.val is None else (
+        "\t{0};\n{1}\n".format(
+            node.val,
+            "\n".join(get_dot(node, count()))
+        )
+    ))
+
+
+def get_dot(node, unique):
+    """recursively prepare a dot graph entry for this node."""
+    if node.left is not None:
+        yield "\t{0} -> {1};".format(node.val, node.left.val)
+        for i in get_dot(node.left, unique):
+            yield i
+    elif node.right is not None:
+        r = next(unique)
+        yield "\tnull{0} [shape=point];".format(r)
+        yield "\t{0} -> null{1};".format(node.val, r)
+    if node.right is not None:
+        yield "\t{0} -> {1};".format(node.val, node.right.val)
+        for i in get_dot(node.right, unique):
+            yield i
+    elif node.left is not None:
+        r = next(unique)
+        yield "\tnull{0} [shape=point];".format(r)
+        yield "\t{0} -> null{1};".format(node.val, r)
+
+
+def output_tree_dot(tree, filename="tree.dot"):
+    """Output the DOT code for a BST tree to a file"""
+    with open(filename, 'w', encoding='utf-8') as f:
+        f.write(get_full_dot(tree._head))
 
 
 @pytest.fixture(scope='session')
