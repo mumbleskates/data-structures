@@ -44,13 +44,22 @@ class _BSTNode(object):
         if val is not None:
             val.parent = self
 
-    def increase_depth(self, at_least):
+    def update_depths(self):
         """Change the depth of this node to be at least a certain amount."""
         node = self
-        while node and node.depth < at_least:
-            node.depth = at_least
+        while node:
+            depth = 1 + max(
+                node.left.depth if node.left else 0,
+                node.right.depth if node.right else 0
+            )
+            if node.depth == depth:
+                # everything is correct now
+                return
+
+            # continue updating upwards
+            node.depth = depth
             node = node.parent
-            at_least += 1
+
 
     def insert(self, item):
         """
@@ -67,7 +76,7 @@ class _BSTNode(object):
             else:
                 self.left = _BSTNode(item)
                 self.len_ += 1
-                self.increase_depth(2)  # update depths
+                self.update_depths()
                 return True
         else:
             if self.right:
@@ -77,7 +86,7 @@ class _BSTNode(object):
             else:
                 self.right = _BSTNode(item)
                 self.len_ += 1
-                self.increase_depth(2)  # update depths
+                self.update_depths()
                 return True
 
     def min_node(self):
