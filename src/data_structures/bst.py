@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from collections import deque
+from itertools import count
 
 
 """\
@@ -215,6 +216,34 @@ class _BSTNode(object):
                 yield item
         yield self.val
 
+    def get_dot(self):
+        """return the tree with root 'self' as a dot graph for visualization"""
+        return "digraph G{{\n{0}}}".format("" if self.val is None else (
+            "\t{0};\n{1}\n".format(
+                self.val,
+                "\n".join(self._get_dot(count()))
+            )
+        ))
+
+    def _get_dot(self, unique):
+        """recursively prepare a dot graph entry for this node."""
+        if self.left is not None:
+            yield "\t{0} -> {1};".format(self.val, self.left.val)
+            for i in self.left._get_dot(unique):
+                yield i
+        elif self.right is not None:
+            r = next(unique)
+            yield "\tnull{0} [shape=point];".format(r)
+            yield "\t{0} -> null{1};".format(self.val, r)
+        if self.right is not None:
+            yield "\t{0} -> {1};".format(self.val, self.right.val)
+            for i in self.right._get_dot(unique):
+                yield i
+        elif self.left is not None:
+            r = next(unique)
+            yield "\tnull{0} [shape=point];".format(r)
+            yield "\t{0} -> null{1};".format(self.val, r)
+
 
 class BST(object):
     """Binary Search Tree."""
@@ -300,5 +329,3 @@ class BST(object):
             return self._head.balance
         else:
             return 0
-
-
