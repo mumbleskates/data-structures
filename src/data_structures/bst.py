@@ -44,6 +44,14 @@ class _BSTNode(object):
         if val is not None:
             val.parent = self
 
+    def increase_depth(self, at_least):
+        """Change the depth of this node to be at least a certain amount."""
+        node = self
+        while node and node.depth < at_least:
+            node.depth = at_least
+            node = node.parent
+            at_least += 1
+
     def insert(self, item):
         """
         Ensure the item is in the tree below this node and return True if
@@ -71,60 +79,6 @@ class _BSTNode(object):
                 self.len_ += 1
                 self.increase_depth(2)  # update depths
                 return True
-
-    def increase_depth(self, at_least):
-        """Change the depth of this node to be at least a certain amount."""
-        node = self
-        while node and node.depth < at_least:
-            node.depth = at_least
-            node = node.parent
-            at_least += 1
-
-    def __contains__(self, item):
-        if item == self.val:
-            return True
-        elif item < self.val:
-            return self.left and item in self.left
-        else:
-            return self.right and item in self.right
-
-    def __len__(self):
-        return self.len_
-
-    def in_order(self):
-        """Traverse the subtree in-order."""
-        if self.left:
-            for item in self.left.in_order():
-                yield item
-        yield self.val
-        if self.right:
-            for item in self.right.in_order():
-                yield item
-
-    def pre_order(self):
-        """Traverse the subtree pre-order."""
-        yield self.val
-        if self.left:
-            for item in self.left.pre_order():
-                yield item
-        if self.right:
-            for item in self.right.pre_order():
-                yield item
-
-    def post_order(self):
-        """Traverse the subtree post-order."""
-        if self.left:
-            for item in self.left.post_order():
-                yield item
-        if self.right:
-            for item in self.right.post_order():
-                yield item
-        yield self.val
-
-    def balance(self):
-        left_depth = self.left.depth if self.left else 0
-        right_depth = self.right.depth if self.right else 0
-        return left_depth - right_depth
 
     def min_node(self):
         if self.left:
@@ -205,6 +159,52 @@ class _BSTNode(object):
             if self.right:
                 self.right = self.right.remove_val(val)
             return self
+
+    def __contains__(self, item):
+        if item == self.val:
+            return True
+        elif item < self.val:
+            return self.left and item in self.left
+        else:
+            return self.right and item in self.right
+
+    def __len__(self):
+        return self.len_
+
+    def in_order(self):
+        """Traverse the subtree in-order."""
+        if self.left:
+            for item in self.left.in_order():
+                yield item
+        yield self.val
+        if self.right:
+            for item in self.right.in_order():
+                yield item
+
+    def pre_order(self):
+        """Traverse the subtree pre-order."""
+        yield self.val
+        if self.left:
+            for item in self.left.pre_order():
+                yield item
+        if self.right:
+            for item in self.right.pre_order():
+                yield item
+
+    def post_order(self):
+        """Traverse the subtree post-order."""
+        if self.left:
+            for item in self.left.post_order():
+                yield item
+        if self.right:
+            for item in self.right.post_order():
+                yield item
+        yield self.val
+
+    def balance(self):
+        left_depth = self.left.depth if self.left else 0
+        right_depth = self.right.depth if self.right else 0
+        return left_depth - right_depth
 
 
 class BST(object):
