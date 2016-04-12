@@ -36,6 +36,7 @@ class _BSTNode(object):
         if node is not None:
             node.parent = self
         self.update_depths()
+        self.update_sizes()
 
     @property
     def right(self):
@@ -47,6 +48,7 @@ class _BSTNode(object):
         if node is not None:
             node.parent = self
         self.update_depths()
+        self.update_sizes()
 
     def update_depths(self):
         """Change the depth of this node to be at least a certain amount."""
@@ -64,37 +66,80 @@ class _BSTNode(object):
             node.depth = depth
             node = node.parent
 
+    def update_sizes(self):
+        node = self
+        while node:
+            size = (
+                1 +
+                (node.left.len_ if node.left else 0) +
+                (node.right.len_ if node.right else 0)
+            )
+            if node.len_ == size:
+                return
+
+            node.len_ = size
+            node = node.parent
+
     @property
     def balance(self):
         left_depth = self.left.depth if self.left else 0
         right_depth = self.right.depth if self.right else 0
         return left_depth - right_depth
 
+    def left_rotation(self):
+        pivot = self.right
+        self.right = pivot.left
+        pivot.left = self
+        return pivot
+
+    def right_rotation(self):
+        pivot = self.left
+        self.left = pivot.right
+        pivot.right = self
+        return pivot
+
+    def rebalance(self):
+        """Check that this node is balanced and return what should go in its place"""
+        balance = self.balance
+        if balance < -1:  # https://goo.gl/q0VorO
+            # right tree is deeper
+            # perform left rotation
+            if self.right.balance > 0:  # avoid right-left case
+                self.right = self.right.right_rotation()
+            return self.left_rotation()
+
+        elif balance > 1:
+            # left tree is deeper
+            # perform right rotation
+            if self.left.balance < 0:  # avoid left-right case
+                self.left = self.left.left_rotation()
+            return self.right_rotation()
+
+        else:
+            # tree is balanced
+            return self
+
     def insert(self, item):
         """
-        Ensure the item is in the tree below this node and return True if
-        it was added, or False if it was already there
+        Ensure the item is in the tree below this node and return the node that should
+        go in this node's place once the tree is balanced.
         """
         if item == self.val:
-            return False
+            return self
         elif item < self.val:
             if self.left:
-                added = self.left.insert(item)
-                self.len_ += added
-                return added
+                self.left = self.left.insert(item)
+                return self.rebalance()
             else:
                 self.left = _BSTNode(item)
-                self.len_ += 1
-                return True
+                return self
         else:
             if self.right:
-                added = self.right.insert(item)
-                self.len_ += added
-                return added
+                self.right = self.right.insert(item)
+                return self.rebalance()
             else:
                 self.right = _BSTNode(item)
-                self.len_ += 1
-                return True
+                return self
 
     def min_node(self):
         if self.left:
@@ -121,18 +166,14 @@ class _BSTNode(object):
         if self.left:
             if self.right:
                 # both children
-                next_node = self.right.min_node()
                 # steal the value of the next node in order
+                next_node = self.right.min_node()
                 self.val = next_node.val
-                # since we have stolen next_node's value and it can be quickly removed,
-                # remove it from the tree by replacing it in its parent
-                if next_node.parent.left is next_node:
-                    next_node.parent.left = next_node.drop()
-                else:
-                    next_node.parent.right = next_node.drop()
+                # since we have stolen next_node's value,
+                # remove it from the tree
+                self.right = self.right.remove_val(next_node.val)
 
-                # this node is not being removed; exit before we update lengths again
-                return self
+                return self.rebalance()
             else:
                 # left child only
                 replace_with = self.left
@@ -143,13 +184,6 @@ class _BSTNode(object):
             else:
                 # leaf node
                 replace_with = None
-
-        # if we reach here, know this node will be removed from the tree
-        # and must propagate the reduced length upwards
-        parent = self.parent
-        while parent:
-            parent.len_ -= 1
-            parent = parent.parent
 
         # finally, return the node that is going to go in this spot
         return replace_with
@@ -170,11 +204,15 @@ class _BSTNode(object):
         elif val < self.val:
             if self.left:
                 self.left = self.left.remove_val(val)
-            return self
+                return self.rebalance()
+            else:
+                return self
         else:
             if self.right:
                 self.right = self.right.remove_val(val)
-            return self
+                return self.rebalance()
+            else:
+                return self
 
     def __contains__(self, item):
         if item == self.val:
@@ -262,7 +300,7 @@ class BST(object):
         """Insert an item into the BST. If it is already present, ignore."""
         hash(item)  # reject mutable items
         if self._head:
-            self._head.insert(item)
+            self._head = self._head.insert(item)
         else:
             self._head = _BSTNode(item)
 
