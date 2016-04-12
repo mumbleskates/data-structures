@@ -1,5 +1,6 @@
 # coding=utf-8
 from __future__ import unicode_literals
+from builtins import open
 
 from collections import deque
 from itertools import count
@@ -329,3 +330,7 @@ class BST(object):
             return self._head.balance
         else:
             return 0
+
+    def output(self, filename="tree.dot"):
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write(self._head.get_dot())
