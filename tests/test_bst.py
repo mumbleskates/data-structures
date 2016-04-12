@@ -5,7 +5,7 @@ import pytest
 
 from data_structures.bst import BST
 
-# Our big-ish tree, constructed naiively, is shaped like so:
+# Our big-ish tree, constructed naiively, is shaped like so if populated naiively:
 #            12
 #          /    \
 #        5       137
@@ -15,7 +15,55 @@ from data_structures.bst import BST
 #            13
 #             \
 #              28
-
+#
+#
+# If populated while balancing, it looks like so:
+#      12
+#
+#      12
+#     /
+#    5
+#
+#      9
+#     / \
+#    5   12
+#
+#      9
+#     / \
+#    5   12
+#          \
+#          137
+#
+#      9
+#     / \
+#    5   42
+#       /  \
+#      12  137
+#
+#      9
+#     / \
+#    5   42
+#       /  \
+#      12  137
+#       \
+#        13...
+#
+# (Here a double rotation is performed)
+#
+#      12
+#     /  \
+#    9   42
+#   /   /  \
+#  5   13  137
+#
+#      12
+#     /  \
+#    9   42
+#   /   /  \
+#  5   13  137
+#       \
+#        28
+#
 BIGTREE_ITEMS = [12, 5, 9, 137, 42, 13, 28]
 TREE_ITEMS = [
     [],
@@ -182,6 +230,12 @@ def test_delete_noop(items):
     before_length = len(bst)
     bst.delete(-1)
     assert len(bst) == before_length
+
+
+def test_tree_balance():
+    bst = BST(range(63))
+    # items added in order should come out into a perfectly balanced tree
+    assert bst.depth() == 6
 
 
 def test_tree_invariants():
