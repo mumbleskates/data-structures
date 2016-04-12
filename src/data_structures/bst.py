@@ -22,6 +22,7 @@ class _BSTNode(object):
         self._left = None
         self._right = None
         self.len_ = 1
+        self.depth = 1
 
     @property
     def left(self):
@@ -58,6 +59,7 @@ class _BSTNode(object):
             else:
                 self.left = _BSTNode(item)
                 self.len_ += 1
+                self.increase_depth(2)  # update depths
                 return True
         else:
             if self.right:
@@ -67,7 +69,16 @@ class _BSTNode(object):
             else:
                 self.right = _BSTNode(item)
                 self.len_ += 1
+                self.increase_depth(2)  # update depths
                 return True
+
+    def increase_depth(self, at_least):
+        """Change the depth of this node to be at least a certain amount."""
+        node = self
+        while node and node.depth < at_least:
+            node.depth = at_least
+            node = node.parent
+            at_least += 1
 
     def __contains__(self, item):
         if item == self.val:
@@ -110,14 +121,9 @@ class _BSTNode(object):
                 yield item
         yield self.val
 
-    def depth(self):
-        left_depth = self.left.depth() if self.left else 0
-        right_depth = self.right.depth() if self.right else 0
-        return 1 + max(left_depth, right_depth)
-
     def balance(self):
-        left_depth = self.left.depth() if self.left else 0
-        right_depth = self.right.depth() if self.right else 0
+        left_depth = self.left.depth if self.left else 0
+        right_depth = self.right.depth if self.right else 0
         return left_depth - right_depth
 
     def min_node(self):
@@ -273,10 +279,7 @@ class BST(object):
 
     def depth(self):
         """Return the depth of the tree's lowest leaf node."""
-        if self._head:
-            return self._head.depth()
-        else:
-            return 0
+        return self._head.depth if self._head else 0
 
     def balance(self):
         """
