@@ -62,6 +62,12 @@ class _BSTNode(object):
             node.depth = depth
             node = node.parent
 
+    @property
+    def balance(self):
+        left_depth = self.left.depth if self.left else 0
+        right_depth = self.right.depth if self.right else 0
+        return left_depth - right_depth
+
     def insert(self, item):
         """
         Ensure the item is in the tree below this node and return True if
@@ -209,11 +215,6 @@ class _BSTNode(object):
                 yield item
         yield self.val
 
-    def balance(self):
-        left_depth = self.left.depth if self.left else 0
-        right_depth = self.right.depth if self.right else 0
-        return left_depth - right_depth
-
 
 class BST(object):
     """Binary Search Tree."""
@@ -296,6 +297,8 @@ class BST(object):
         deeper, negative means the right side is deeper.
         """
         if self._head:
-            return self._head.balance()
+            return self._head.balance
         else:
             return 0
+
+
