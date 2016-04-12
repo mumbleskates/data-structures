@@ -32,7 +32,7 @@ TREE_PREORDER = [
     [1, 2],
     [2, 1],
     [1, 0, 2],
-    [12, 5, 9, 137, 42, 13, 28],
+    [12, 9, 5, 42, 13, 28, 137],
 ]
 TREE_POSTORDER = [
     [],
@@ -40,7 +40,7 @@ TREE_POSTORDER = [
     [2, 1],
     [1, 2],
     [0, 2, 1],
-    [9, 5, 28, 13, 42, 137, 12],
+    [5, 9, 28, 13, 137, 42, 12],
 ]
 TREE_BREADTHFIRST = [
     [],
@@ -48,7 +48,7 @@ TREE_BREADTHFIRST = [
     [1, 2],
     [2, 1],
     [1, 0, 2],
-    [12, 5, 137, 9, 42, 13, 28],
+    [12, 9, 42, 5, 13, 137, 28],
 ]
 TREE_EXPECTED_SIZE = [
     0,
@@ -64,7 +64,7 @@ TREE_EXPECTED_DEPTH = [
     2,
     2,
     2,
-    5,
+    4,
 ]
 TREE_EXPECTED_BALANCE = [
     0,
@@ -72,7 +72,7 @@ TREE_EXPECTED_BALANCE = [
     -1,
     1,
     0,
-    -2,
+    -1,
 ]
 
 
@@ -184,7 +184,7 @@ def test_delete_noop(items):
     assert len(bst) == before_length
 
 
-def test_tree_lengths_rigorously():
+def test_tree_invariants():
     """Some (fuzz?) testing to ensure that nodes probably always hold the
     correct length of their sub-trees"""
     import random
@@ -206,11 +206,23 @@ def test_tree_lengths_rigorously():
 
     def check_correct_lengths():
         for node in tree_nodes(bst._head):
-            assert len(node) == sum(1 for _ in tree_nodes(node))
+            # lengths should be always correct
+            assert len(node) == sum((
+                1,
+                len(node.left) if node.left else 0,
+                len(node.right) if node.right else 0
+            ))
+            # tree should always be balanced
+            assert -1 <= node.balance <= 1
+            # depths should always be correct
+            assert node.depth == 1 + max(
+                node.left.depth if node.left else 0,
+                node.right.depth if node.right else 0
+            )
 
     check_correct_lengths()
 
-    for _ in range(50):
+    for _ in range(200):
         bst.insert(random.randint(0, 49))
         check_correct_lengths()
         bst.delete(random.randint(0, 49))
