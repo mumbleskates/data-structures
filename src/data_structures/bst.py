@@ -29,20 +29,22 @@ class _BSTNode(object):
         return self._left
 
     @left.setter
-    def left(self, val):
-        self._left = val
-        if val is not None:
-            val.parent = self
+    def left(self, node):
+        self._left = node
+        if node is not None:
+            node.parent = self
+        self.update_depths()
 
     @property
     def right(self):
         return self._right
 
     @right.setter
-    def right(self, val):
-        self._right = val
-        if val is not None:
-            val.parent = self
+    def right(self, node):
+        self._right = node
+        if node is not None:
+            node.parent = self
+        self.update_depths()
 
     def update_depths(self):
         """Change the depth of this node to be at least a certain amount."""
@@ -56,10 +58,9 @@ class _BSTNode(object):
                 # everything is correct now
                 return
 
-            # continue updating upwards
+            # depth is changing, continue updating upwards
             node.depth = depth
             node = node.parent
-
 
     def insert(self, item):
         """
@@ -76,7 +77,6 @@ class _BSTNode(object):
             else:
                 self.left = _BSTNode(item)
                 self.len_ += 1
-                self.update_depths()
                 return True
         else:
             if self.right:
@@ -86,7 +86,6 @@ class _BSTNode(object):
             else:
                 self.right = _BSTNode(item)
                 self.len_ += 1
-                self.update_depths()
                 return True
 
     def min_node(self):
