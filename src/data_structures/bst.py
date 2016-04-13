@@ -253,6 +253,25 @@ class _BSTNode(object):
                 yield item
         yield self.val
 
+    def get_index(self, index):
+        if self.left:
+            # inspector thinks self.left isn't sized
+            # noinspection PyTypeChecker
+            left_len = len(self.left)
+            if index >= left_len:
+                # skip over entire left tree
+                index -= left_len
+            else:
+                return self.left.get_index(index)
+        # we have skipped the left side
+        if index == 0:
+            return self.val
+        else:
+            index -= 1
+        # we have skipped our own value as well now
+        # it must be in the right side subtree
+        return self.right.get_index(index)
+
 
 class BST(object):
     """Binary Search Tree."""
@@ -316,6 +335,17 @@ class BST(object):
                     q.appendleft(node.left)
                 if node.right:
                     q.appendleft(node.right)
+
+    def __getitem__(self, index):
+        """Get an item from the tree by index, in sorted order."""
+        if not isinstance(index, int):
+            raise TypeError("indices must be integers")
+        if index < 0:
+            # support negative indexing from the end
+            index += len(self)
+        if index < 0 or index >= len(self):
+            raise IndexError
+        return self._head.get_index(index)
 
     def size(self):
         """Return the number of items in the tree."""

@@ -276,6 +276,31 @@ def test_tree_balance():
     assert bst.depth() == 6
 
 
+def test_tree_indexing():
+    bst = BST(range(100, 120))
+    for i in range(20):
+        assert bst[i] == i + 100
+
+
+def test_tree_negative_indexing():
+    bst = BST(range(100, 120))
+    for i in range(1, 21):
+        assert bst[-i] == 120 - i
+
+
+def test_tree_indexing_bad_index():
+    bst = BST()
+    with pytest.raises(IndexError):
+        _ = bst[0]
+    bst = BST(range(10))
+    with pytest.raises(IndexError):
+        _ = bst[-11]
+    with pytest.raises(IndexError):
+        _ = bst[10]
+    with pytest.raises(TypeError):
+        _ = bst[1.5]
+
+
 def test_tree_invariants():
     """Some (fuzz?) testing to ensure that nodes probably always hold the
     correct length of their sub-trees"""
