@@ -49,34 +49,19 @@ class _BSTNode(object):
         self.update_sizes()
 
     def update_depths(self):
-        """Change the depth of this node to be at least a certain amount."""
-        node = self
-        while node:
-            depth = 1 + max(
-                node.left.depth if node.left else 0,
-                node.right.depth if node.right else 0
-            )
-            if node.depth == depth:
-                # everything is correct now
-                return
-
-            # depth is changing, continue updating upwards
-            node.depth = depth
-            node = node.parent
+        """Update the depth of this node's subtree."""
+        self.depth = 1 + max(
+            self.left.depth if self.left else 0,
+            self.right.depth if self.right else 0
+        )
 
     def update_sizes(self):
-        node = self
-        while node:
-            size = (
-                1 +
-                (node.left.len_ if node.left else 0) +
-                (node.right.len_ if node.right else 0)
-            )
-            if node.len_ == size:
-                return
-
-            node.len_ = size
-            node = node.parent
+        """Update the size of this node's subtree."""
+        self.len_ = (
+            1 +
+            (self.left.len_ if self.left else 0) +
+            (self.right.len_ if self.right else 0)
+        )
 
     @property
     def balance(self):
@@ -174,17 +159,11 @@ class _BSTNode(object):
                 return self.rebalance()
             else:
                 # left child only
-                replace_with = self.left
+                return self.left
         else:
-            if self.right:
-                # right child only
-                replace_with = self.right
-            else:
-                # leaf node
-                replace_with = None
-
-        # finally, return the node that is going to go in this spot
-        return replace_with
+            # right child only or no children. If self.right is None, we want to return
+            # None anyway.
+            return self.right
 
     def remove_val(self, val):
         """
