@@ -1,6 +1,6 @@
 # coding=utf-8
 from __future__ import unicode_literals
-from builtins import open
+from builtins import open, range, reversed
 
 from itertools import count
 import pytest
@@ -72,7 +72,11 @@ TREE_ITEMS = [
     [1],
     [1, 2],
     [2, 1],
-    [1, 0, 2],
+    [1, 0, 2],  # balanced
+    [0, 1, 2],  # right right
+    [2, 1, 0],  # left left
+    [2, 0, 1],  # left right
+    [0, 2, 1],  # right left
     BIGTREE_ITEMS,
 ]
 TREE_INORDER = list(map(sorted, TREE_ITEMS))
@@ -82,6 +86,10 @@ TREE_PREORDER = [
     [1, 2],
     [2, 1],
     [1, 0, 2],
+    [1, 0, 2],
+    [1, 0, 2],
+    [1, 0, 2],
+    [1, 0, 2],
     [12, 9, 5, 42, 13, 28, 137],
 ]
 TREE_POSTORDER = [
@@ -89,6 +97,10 @@ TREE_POSTORDER = [
     [1],
     [2, 1],
     [1, 2],
+    [0, 2, 1],
+    [0, 2, 1],
+    [0, 2, 1],
+    [0, 2, 1],
     [0, 2, 1],
     [5, 9, 28, 13, 137, 42, 12],
 ]
@@ -98,6 +110,10 @@ TREE_BREADTHFIRST = [
     [1, 2],
     [2, 1],
     [1, 0, 2],
+    [1, 0, 2],
+    [1, 0, 2],
+    [1, 0, 2],
+    [1, 0, 2],
     [12, 9, 42, 5, 13, 137, 28],
 ]
 TREE_EXPECTED_SIZE = [
@@ -106,11 +122,19 @@ TREE_EXPECTED_SIZE = [
     2,
     2,
     3,
+    3,
+    3,
+    3,
+    3,
     7,
 ]
 TREE_EXPECTED_DEPTH = [
     0,
     1,
+    2,
+    2,
+    2,
+    2,
     2,
     2,
     2,
@@ -121,6 +145,10 @@ TREE_EXPECTED_BALANCE = [
     0,
     -1,
     1,
+    0,
+    0,
+    0,
+    0,
     0,
     -1,
 ]
@@ -268,6 +296,17 @@ def test_delete_noop(items):
     before_length = len(bst)
     bst.delete(-1)
     assert len(bst) == before_length
+
+
+@pytest.mark.parametrize('items', TREE_ITEMS + [range(20)])
+def test_deplete_from_head(items):
+    """Deplete the tree by repeatedly removing the topmost value"""
+    bst = BST(items)
+    for expected_len in reversed(range(len(items))):
+        head_val = bst._head.val
+        bst.delete(head_val)
+        assert head_val not in bst
+        assert len(bst) == expected_len
 
 
 def test_tree_balance():
