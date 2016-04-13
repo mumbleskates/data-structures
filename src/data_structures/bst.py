@@ -33,8 +33,7 @@ class _BSTNode(object):
         self._left = node
         if node is not None:
             node.parent = self
-        self.update_depths()
-        self.update_sizes()
+        self.update_stats()
 
     @property
     def right(self):
@@ -45,18 +44,14 @@ class _BSTNode(object):
         self._right = node
         if node is not None:
             node.parent = self
-        self.update_depths()
-        self.update_sizes()
+        self.update_stats()
 
-    def update_depths(self):
-        """Update the depth of this node's subtree."""
+    def update_stats(self):
+        """Update the depth and size of this node's subtree."""
         self.depth = 1 + max(
             self.left.depth if self.left else 0,
             self.right.depth if self.right else 0
         )
-
-    def update_sizes(self):
-        """Update the size of this node's subtree."""
         self.len_ = (
             1 +
             (self.left.len_ if self.left else 0) +
@@ -124,20 +119,18 @@ class _BSTNode(object):
                 self.right = _BSTNode(item)
                 return self
 
-    def min_node(self):
+    def pick_minimum(self):
+        """
+        Remove the node that contains the minimum value in this subtree.
+
+        The returned value is a tuple of what this node should be replaced with
+        and what the minimum value in the sub-tree was.
+        """
         if self.left:
-            return self.left.min_node()
+            self.left, value = self.left.pick_minimum()
+            return self.rebalance(), value
         else:
-            return self
-
-    # We are only pulling node values from the right-hand tree on deletion,
-    # so this code is unused
-
-    #  def max_node(self):
-    #     if self.right:
-    #         return self.right.max_node()
-    #     else:
-    #         return self
+            return self.right, self.val
 
     def drop(self):
         """
@@ -150,12 +143,7 @@ class _BSTNode(object):
             if self.right:
                 # both children
                 # steal the value of the next node in order
-                next_node = self.right.min_node()
-                self.val = next_node.val
-                # since we have stolen next_node's value,
-                # remove it from the tree
-                self.right = self.right.remove_val(next_node.val)
-
+                self.right, self.val = self.right.pick_minimum()
                 return self.rebalance()
             else:
                 # left child only
