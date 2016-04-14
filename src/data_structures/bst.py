@@ -10,9 +10,9 @@ Binary Search Tree module
 Provides an implementation of a binary search tree. Runtime complexities
 are as follows:
 
-insert, contains: O(log(n)) generally, O(n) worst case
-size: O(1)
-depth, balance: O(n)"""
+insert, contains, delete, index: O(log(n))
+size, depth, balance: O(1)
+"""
 
 
 class _BSTNode(object):
