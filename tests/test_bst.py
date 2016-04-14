@@ -190,6 +190,37 @@ def output_tree_dot(tree, filename="tree.dot"):
         f.write(get_full_dot(tree._head))
 
 
+def check_invariants(bst):
+    # generator that yields all nodes in a sub-tree
+    def tree_nodes(n):
+        if n is None:
+            return
+        yield n
+        if n.left:
+            assert n.left.parent is n
+            for x in tree_nodes(n.left):
+                yield x
+        if n.right:
+            assert n.right.parent is n
+            for x in tree_nodes(n.right):
+                yield x
+
+    for node in tree_nodes(bst._head):
+        # lengths should be always correct
+        assert len(node) == sum((
+            1,
+            len(node.left) if node.left else 0,
+            len(node.right) if node.right else 0
+        ))
+        # tree should always be balanced
+        assert -1 <= node.balance <= 1
+        # depths should always be correct
+        assert node.depth == 1 + max(
+            node.left.depth if node.left else 0,
+            node.right.depth if node.right else 0
+        )
+
+
 @pytest.fixture(scope='session')
 def bigtree():
     return BST(BIGTREE_ITEMS)
@@ -327,6 +358,29 @@ def test_tree_negative_indexing():
         assert bst[-i] == 120 - i
 
 
+@pytest.mark.parametrize('items', TREE_ITEMS + [range(20)])
+def test_delete_index(items):
+    for index in range(len(items)):
+        bst = BST(items)
+        to_remove = bst[index]
+        del bst[index]
+        assert len(bst) == len(items) - 1
+        assert to_remove not in bst
+        check_invariants(bst)
+
+
+@pytest.mark.parametrize('items', TREE_ITEMS + [range(20)])
+def test_delete_negative_index(items):
+    length = len(items)
+    for index in range(length):
+        bst = BST(items)
+        to_remove = bst[index - length]
+        del bst[index - length]
+        assert len(bst) == length - 1
+        assert to_remove not in bst
+        check_invariants(bst)
+
+
 def test_tree_indexing_bad_index():
     bst = BST()
     with pytest.raises(IndexError):
@@ -340,7 +394,29 @@ def test_tree_indexing_bad_index():
         _ = bst[1.5]
 
 
-def test_tree_invariants():
+def test_tree_delete_index_bad_index():
+    bst = BST()
+    with pytest.raises(IndexError):
+        del bst[0]
+    bst = BST(range(10))
+    with pytest.raises(IndexError):
+        del bst[-11]
+    with pytest.raises(IndexError):
+        del bst[10]
+    with pytest.raises(TypeError):
+        del bst[1.5]
+
+
+@pytest.mark.parametrize('items', TREE_ITEMS)
+def test_repr(items):
+    bst = BST(items)
+    if items:
+        assert repr(bst) == str(bst) == "data_structures.bst.BST({0})".format(sorted(items))
+    else:
+        assert repr(bst) == str(bst) == "data_structures.bst.BST()"
+
+
+def test_tree_invariants_fuzz():
     """Some (fuzz?) testing to ensure that nodes probably always hold the
     correct length of their sub-trees"""
     import random
@@ -348,38 +424,10 @@ def test_tree_invariants():
     random.shuffle(items)
     bst = BST(items[:25])
 
-    # generator that yields all nodes in a sub-tree
-    def tree_nodes(node):
-        yield node
-        if node.left:
-            assert node.left.parent is node
-            for x in tree_nodes(node.left):
-                yield x
-        if node.right:
-            assert node.right.parent is node
-            for x in tree_nodes(node.right):
-                yield x
-
-    def check_correct_lengths():
-        for node in tree_nodes(bst._head):
-            # lengths should be always correct
-            assert len(node) == sum((
-                1,
-                len(node.left) if node.left else 0,
-                len(node.right) if node.right else 0
-            ))
-            # tree should always be balanced
-            assert -1 <= node.balance <= 1
-            # depths should always be correct
-            assert node.depth == 1 + max(
-                node.left.depth if node.left else 0,
-                node.right.depth if node.right else 0
-            )
-
-    check_correct_lengths()
+    check_invariants(bst)
 
     for _ in range(200):
         bst.insert(random.randint(0, 49))
-        check_correct_lengths()
+        check_invariants(bst)
         bst.delete(random.randint(0, 49))
-        check_correct_lengths()
+        check_invariants(bst)

@@ -183,9 +183,9 @@ class _BSTNode(object):
         if item == self.val:
             return True
         elif item < self.val:
-            return self.left and item in self.left
+            return self.left is not None and item in self.left
         else:
-            return self.right and item in self.right
+            return self.right is not None and item in self.right
 
     def __len__(self):
         return self.len_
@@ -221,6 +221,7 @@ class _BSTNode(object):
         yield self.val
 
     def get_index(self, index):
+        """Return the index'th value of this sub-tree in sorted order"""
         if self.left:
             # inspector thinks self.left isn't sized
             # noinspection PyTypeChecker
@@ -238,6 +239,29 @@ class _BSTNode(object):
         # we have skipped our own value as well now
         # it must be in the right side subtree
         return self.right.get_index(index)
+
+    def del_index(self, index):
+        """Delete the index'th value of this sub-tree in sorted order
+        and return what this node should be replaced with"""
+        if self.left:
+            # inspector thinks self.left isn't sized
+            # noinspection PyTypeChecker
+            left_len = len(self.left)
+            if index >= left_len:
+                # skip over entire left tree
+                index -= left_len
+            else:
+                self.left = self.left.del_index(index)
+                return self.rebalance()
+        # we have skipped the left side
+        if index == 0:
+            return self.drop()
+        else:
+            index -= 1
+        # we have skipped our own value as well now
+        # it must be in the right side subtree
+        self.right = self.right.del_index(index)
+        return self.rebalance()
 
 
 class BST(object):
@@ -267,7 +291,7 @@ class BST(object):
 
     def contains(self, item):
         """Return True if the given item is in the tree."""
-        return self._head and item in self._head
+        return self._head is not None and item in self._head
 
     __contains__ = contains
 
@@ -314,6 +338,17 @@ class BST(object):
             raise IndexError
         return self._head.get_index(index)
 
+    def __delitem__(self, index):
+        """Delete an item from the tree by index, in sorted order."""
+        if not isinstance(index, int):
+            raise TypeError("indices must be integers")
+        if index < 0:
+            # support negative indexing from the end
+            index += len(self)
+        if index < 0 or index >= len(self):
+            raise IndexError
+        self._head = self._head.del_index(index)
+
     def size(self):
         """Return the number of items in the tree."""
         # noinspection PyTypeChecker
@@ -335,3 +370,8 @@ class BST(object):
             return self._head.balance
         else:
             return 0
+
+    def __repr__(self):
+        return "data_structures.bst.BST({0})".format(
+            list(self) if self else ""
+        )
