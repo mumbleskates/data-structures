@@ -220,6 +220,16 @@ class _BSTNode(object):
                 yield item
         yield self.val
 
+    def reverse_order(self):
+        """Traverse the subtree in reverse in-order."""
+        if self.right:
+            for item in self.right.reverse_order():
+                yield item
+        yield self.val
+        if self.left:
+            for item in self.left.reverse_order():
+                yield item
+
     def get_index(self, index):
         """Return the index'th value of this sub-tree in sorted order"""
         if self.left:
@@ -265,7 +275,56 @@ class _BSTNode(object):
 
 
 class BST(object):
-    """Binary Search Tree."""
+    """
+    Binary Search Tree.
+
+    Provides basic set operations:
+
+    >>> b = BST()
+    >>> b
+    data_structures.bst.BST()
+    >>> b.insert('one')
+    >>> b.insert('two')
+    >>> b.insert('three')
+    >>> b
+    data_structures.bst.BST(['one', 'three', 'two'])
+
+    Items are iterated over in sorted order:
+
+    >>> list(b)
+    ['one', 'three', 'two']
+
+    Items already in the tree silently do nothing when added again:
+
+    >>> b.insert('one')
+    >>> b
+    data_structures.bst.BST(['one', 'three', 'two'])
+
+    Items in the tree can be accessed by index:
+
+    >>> b[1]
+    'three'
+    >>> b[-1]
+    'two'
+
+    Items can be removed:
+
+    >>> b.delete('one')
+    >>> b
+    data_structures.bst.BST(['three', 'two'])
+
+    Removing items that are not in the tree silently does nothing:
+
+    >>> b.delete('one')
+    >>> 'one' in b
+    False
+
+    Items can also be deleted by index:
+    >>> b = BST(['a', 'b', 'c'])
+    >>> del b[1]
+    >>> b
+    data_structures.bst.BST(['a', 'c'])
+    """
 
     def __init__(self, items=()):
         """
@@ -302,6 +361,14 @@ class BST(object):
                 yield item
 
     __iter__ = in_order
+
+    def reverse_order(self):
+        """Traverse the tree in reversed in-order"""
+        if self._head:
+            for item in self._head.reverse_order():
+                yield item
+
+    __reversed__ = reverse_order
 
     def pre_order(self):
         """Traverse the tree pre-order."""
@@ -348,6 +415,10 @@ class BST(object):
         if index < 0 or index >= len(self):
             raise IndexError
         self._head = self._head.del_index(index)
+
+    def clear(self):
+        """Empties the tree."""
+        self._head = None
 
     def size(self):
         """Return the number of items in the tree."""

@@ -80,6 +80,7 @@ TREE_ITEMS = [
     BIGTREE_ITEMS,
 ]
 TREE_INORDER = list(map(sorted, TREE_ITEMS))
+TREE_REVERSEORDER = [list(reversed(x)) for x in TREE_INORDER]
 TREE_PREORDER = [
     [],
     [1],
@@ -297,6 +298,12 @@ def test_inorder(items, expected):
     assert list(bst.in_order()) == expected
 
 
+@pytest.mark.parametrize('items, expected', zip(TREE_ITEMS, TREE_REVERSEORDER))
+def test_reverseorder(items, expected):
+    bst = BST(items)
+    assert list(reversed(bst)) == expected
+
+
 @pytest.mark.parametrize('items, expected', zip(TREE_ITEMS, TREE_PREORDER))
 def test_preorder(items, expected):
     bst = BST(items)
@@ -410,6 +417,13 @@ def test_tree_delete_index_bad_index():
         del bst[10]
     with pytest.raises(TypeError):
         del bst[1.5]
+
+
+@pytest.mark.parametrize('items', TREE_ITEMS)
+def test_clear(items):
+    bst = BST(items)
+    bst.clear()
+    assert len(bst) == 0
 
 
 @pytest.mark.parametrize('items', TREE_ITEMS)
