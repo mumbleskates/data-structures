@@ -206,6 +206,11 @@ def check_invariants(bst):
                 yield x
 
     for node in tree_nodes(bst._head):
+        # sorted invariant
+        if node.left:
+            assert node.left.val < node.val
+        if node.right:
+            assert node.right.val > node.val
         # lengths should be always correct
         assert len(node) == sum((
             1,
