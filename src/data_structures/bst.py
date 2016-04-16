@@ -273,6 +273,37 @@ class _BSTNode(object):
         self.right = self.right.del_index(index)
         return self.rebalance()
 
+    def irange(self, start, stop, inclusive):
+        # when stop <= self.val we can eliminate stop for the left side
+        # when start >= self.val we can eliminate start for the right side
+        if start is None and stop is None:
+            # with no bounds, shortcut to faster traversal
+            for item in self.in_order():
+                yield item
+            return
+
+        # calculate whether the beginning and end of the range cover this node's value
+        starts_before_val = start is None or start < self.val
+        ends_after_val = stop is None or self.val < stop
+
+        # cover left branch
+        if self.left and starts_before_val:
+            for item in self.left.irange(start, None if ends_after_val else stop, inclusive):
+                yield item
+
+        # yield this value if it's covered by the range
+        if (
+            (starts_before_val and ends_after_val) or
+            (inclusive[0] and start == self.val) or
+            (inclusive[1] and stop == self.val)
+        ):
+            yield self.val
+
+        # cover right branch
+        if self.right and ends_after_val:
+            for item in self.right.irange(None if starts_before_val else start, stop, inclusive):
+                yield item
+
 
 class BST(object):
     """
@@ -357,30 +388,34 @@ class BST(object):
     def in_order(self):
         """Traverse the tree in-order."""
         if self._head:
-            for item in self._head.in_order():
-                yield item
+            return self._head.in_order()
+        else:
+            return iter(())
 
     __iter__ = in_order
 
     def reverse_order(self):
         """Traverse the tree in reversed in-order"""
         if self._head:
-            for item in self._head.reverse_order():
-                yield item
+            return self._head.reverse_order()
+        else:
+            return iter(())
 
     __reversed__ = reverse_order
 
     def pre_order(self):
         """Traverse the tree pre-order."""
         if self._head:
-            for item in self._head.pre_order():
-                yield item
+            return self._head.pre_order()
+        else:
+            return iter(())
 
     def post_order(self):
         """Traverse the tree post-order."""
         if self._head:
-            for item in self._head.post_order():
-                yield item
+            return self._head.post_order()
+        else:
+            return iter(())
 
     def breadth_first(self):
         """Traverse the tree breadth-first."""
@@ -415,6 +450,12 @@ class BST(object):
         if index < 0 or index >= len(self):
             raise IndexError
         self._head = self._head.del_index(index)
+
+    def irange(self, start, stop, inclusive=(True, True)):
+        if self._head is None or (stop is not None and start is not None and stop < start):
+            return iter(())
+        else:
+            return self._head.irange(start, stop, inclusive)
 
     def clear(self):
         """Empties the tree."""

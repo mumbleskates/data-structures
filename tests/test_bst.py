@@ -419,6 +419,96 @@ def test_tree_delete_index_bad_index():
         del bst[1.5]
 
 
+RANGE_BST = BST([1, 2, 3, 4, 0])
+#       2
+#     /  \
+#    1    3
+#   /      \
+#  0        4
+INCLUSIVES = [(True, True), (True, False), (False, True), (False, False)]
+
+
+@pytest.mark.parametrize('inclusive', INCLUSIVES)
+@pytest.mark.parametrize('i', range(5))
+def test_irange_single_select(i, inclusive):
+    assert list(RANGE_BST.irange(i, i, inclusive)) == ([i] if any(inclusive) else [])
+
+
+@pytest.mark.parametrize('inclusive', INCLUSIVES)
+@pytest.mark.parametrize('i', range(5))
+def test_irange_single_select_surround(i, inclusive):
+    assert list(RANGE_BST.irange(i - .5, i + .5, inclusive)) == [i]
+
+
+@pytest.mark.parametrize('inclusive', INCLUSIVES)
+@pytest.mark.parametrize('i', range(5 - 2))
+def test_irange_several(i, inclusive):
+    assert list(RANGE_BST.irange(i, i + 2, inclusive)) == (
+        ([i] if inclusive[0] else []) +
+        [i+1] +
+        ([i+2] if inclusive[1] else [])
+    )
+
+
+@pytest.mark.parametrize('inclusive', INCLUSIVES)
+@pytest.mark.parametrize('i', range(5))
+def test_irange_open_start(i, inclusive):
+    assert list(RANGE_BST.irange(None, i, inclusive)) == list(range(i + inclusive[1]))
+
+
+@pytest.mark.parametrize('inclusive', INCLUSIVES)
+@pytest.mark.parametrize('i', range(5))
+def test_irange_open_stop(i, inclusive):
+    assert list(RANGE_BST.irange(i, None, inclusive)) == list(range(i + (not inclusive[0]), 5))
+
+
+@pytest.mark.parametrize('inclusive', INCLUSIVES)
+def test_irange_open_both(inclusive):
+    assert list(RANGE_BST.irange(None, None, inclusive)) == list(RANGE_BST)
+
+
+@pytest.mark.parametrize('inclusive', INCLUSIVES)
+def test_irange_outside_range_before(inclusive):
+    assert list(RANGE_BST.irange(-2, -1, inclusive)) == []
+
+
+@pytest.mark.parametrize('inclusive', INCLUSIVES)
+def test_irange_outside_range_before_open(inclusive):
+    assert list(RANGE_BST.irange(None, -1, inclusive)) == []
+
+
+@pytest.mark.parametrize('inclusive', INCLUSIVES)
+def test_irange_outside_range_after(inclusive):
+    assert list(RANGE_BST.irange(10, 11, inclusive)) == []
+
+
+@pytest.mark.parametrize('inclusive', INCLUSIVES)
+def test_irange_outside_range_after_open(inclusive):
+    assert list(RANGE_BST.irange(10, None, inclusive)) == []
+
+
+@pytest.mark.parametrize('inclusive', INCLUSIVES)
+@pytest.mark.parametrize('i', range(-1, 5))
+def test_irange_between_values(i, inclusive):
+    assert list(RANGE_BST.irange(i + .4, i + .6)) == []
+
+
+@pytest.mark.parametrize('inclusive', INCLUSIVES)
+@pytest.mark.parametrize('i', range(2, 5))
+def test_irange_backwards_existing_values(i, inclusive):
+    assert list(RANGE_BST.irange(i, i - 2, inclusive)) == []
+
+
+@pytest.mark.parametrize('inclusive', INCLUSIVES)
+@pytest.mark.parametrize('i', range(2, 5))
+def test_irange_backwards_between_values(i, inclusive):
+    assert list(RANGE_BST.irange(i + .5, i - 1.5, inclusive)) == []
+
+
+def test_irange_empty_tree():
+    assert list(BST().irange(1, 2)) == []
+
+
 @pytest.mark.parametrize('items', TREE_ITEMS)
 def test_clear(items):
     bst = BST(items)
