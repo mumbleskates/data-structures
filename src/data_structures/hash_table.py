@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 
+try:
+    # expected NameError
+    # noinspection PyUnresolvedReferences
+    STR_TYPES = (str, unicode)
+except NameError:
+    STR_TYPES = (bytes, str)
+
+
 class HashTable(object):
     """A variation of the Bernstein hash table algorithm."""
 
@@ -9,10 +17,12 @@ class HashTable(object):
 
     def get(self, key):
         """Return the value stored with the given key."""
-        if not isinstance(key, str):
-            raise TypeError("Keys must be strings")
+        if not isinstance(key, STR_TYPES):
+            raise TypeError(key, type(key), "Keys must be strings")
         i = self._hash(key)
         if self._table[i]:
+            # inspector thinks all _table items are None
+            # noinspection PyTypeChecker
             for k, v in self._table[i]:
                 if k == key:
                     return v
@@ -20,13 +30,19 @@ class HashTable(object):
 
     def set(self, key, val):
         """Store the given value using the given key."""
-        if not isinstance(key, str):
-            raise TypeError("Keys must be strings")
+        if not isinstance(key, STR_TYPES):
+            raise TypeError(key, type(key), "Keys must be strings")
         i = self._hash(key)
         if not self._table[i]:
             self._table[i] = [(key, val)]
         else:
-            self._table[i].append((key, val))
+            # inspector thinks all _table items are None
+            # noinspection PyTypeChecker
+            for bucket_index, (k, v) in enumerate(self._table[i]):
+                if k == key:
+                    self._table[i][bucket_index] = (key, val)
+            else:
+                self._table[i].append((key, val))
 
     def _hash(self, key):
         """Hash the provided key."""
