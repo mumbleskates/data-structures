@@ -41,6 +41,7 @@ class HashTable(object):
             for bucket_index, (k, v) in enumerate(self._table[i]):
                 if k == key:
                     self._table[i][bucket_index] = (key, val)
+                    break
             else:
                 self._table[i].append((key, val))
 
