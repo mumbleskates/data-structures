@@ -2,12 +2,12 @@
 from builtins import range
 
 
-def insertion_sort(items):
+def insertion_sort(items, key=lambda x: x):
     """Implementation of an in-place insertion sort algorithm."""
     for i, item in enumerate(items):
         for i in reversed(range(i)):
             compare_item = items[i]
-            if item < compare_item:
+            if key(item) < key(compare_item):
                 items[i + 1] = compare_item
             else:
                 items[i + 1] = item
@@ -18,7 +18,7 @@ def insertion_sort(items):
             # item was less than all the items before it
 
 
-def merge_sort(items):
+def merge_sort(items, key=lambda x: x):
     """Return a generator that uses merge-sort to return the items of the list
     in sorted order."""
     def sub_sort(start, length):
@@ -34,7 +34,7 @@ def merge_sort(items):
             left_item = next(left)
             right_item = next(right)
             while True:
-                if right_item < left_item:
+                if key(right_item) < key(left_item):
                     yield right_item
                     # advance right side
                     try:
