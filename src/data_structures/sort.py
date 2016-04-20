@@ -58,3 +58,50 @@ def merge_sort(items, key=lambda x: x):
                         return
 
     return sub_sort(0, len(items))
+
+
+def _median(a, b, c):
+    """Choose the median sorted value of three values"""
+    if a <= b <= c or c <= b <= a:
+        return b
+    elif b <= a <= c or c <= a <= b:
+        return a
+    else:
+        return c
+
+
+def quicksort(items):
+    """Sort the given list in-place with the quicksort algorithm."""
+    def sub_sort(start, end):
+        # Start is the inclusive first index of the partition, and end
+        # is the exclusive last index
+
+        # choose the median of first, last, and middle to pivot
+        # https://en.wikipedia.org/wiki/Quicksort#Choice_of_pivot
+        if end - start < 2:  # do not sort 1 or less items
+            return
+
+        pivot = _median(
+            items[start],  # first
+            items[(start + end) >> 1],  # middle
+            items[end - 1]  # last
+        )
+
+        # perform
+        lo = start
+        hi = end - 1
+        while lo < hi:
+            while items[lo] < pivot:
+                lo += 1
+            while pivot < items[hi]:
+                hi -= 1
+            # now, items[hi] <= pivot <= items[lo]
+            # swap hi and lo
+            items[lo], items[hi] = items[hi], items[lo]
+
+        pivot_index = hi
+
+        sub_sort(start, pivot_index)
+        sub_sort(pivot_index + 1, end)
+
+    sub_sort(0, len(items))
