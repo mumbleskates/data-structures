@@ -3,7 +3,7 @@ from builtins import range
 
 
 def insertion_sort(items):
-    """Implementation of an inserstion sort algorithm."""
+    """Implementation of an in-place insertion sort algorithm."""
     for i, item in enumerate(items):
         for i in reversed(range(i)):
             compare_item = items[i]
@@ -16,3 +16,11 @@ def insertion_sort(items):
         else:
             items[0] = item
             # item was less than all the items before it
+
+def merged_sort(items):
+    """Implementation of a copy merge sort algorithm."""
+    # take a list
+    # chop it in half
+    # chop those halves in half
+    # compare values of 2 items
+    # if right is less than left, switch
