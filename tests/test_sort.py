@@ -1,6 +1,6 @@
 # coding=utf-8
 import pytest
-from data_structures.sort import insertion_sort, merge_sort, quicksort
+from data_structures.sort import insertion_sort, merge_sort, quicksort, merge_sort_2
 
 
 UNSORTED_LISTS = [
@@ -45,6 +45,19 @@ def test_merge_sort_stability():
 
 
 @pytest.mark.parametrize('items, expected', zip(UNSORTED_LISTS, SORTED_LISTS))
+def test_merge_sort_2(items, expected):
+    items = list(items)
+    merge_sort_2(items)
+    assert items == expected
+
+
+def test_merge_sort_2_stability():
+    items = list(STABILITY_ITEMS)
+    merge_sort_2(items, key=STABILITY_KEY)
+    assert items == STABILITY_SORTED
+
+
+@pytest.mark.parametrize('items, expected', zip(UNSORTED_LISTS, SORTED_LISTS))
 def test_quicksort(items, expected):
     items = list(items)
     quicksort(items)
@@ -65,13 +78,19 @@ if __name__ == '__main__':
 
     for alg, description in [
         (lambda: insertion_sort(list(trial)),
-         "Insertion-sort is an in-place algorithm with O(n^2) time complexity."),
+         "Insertion-sort is an in-place algorithm with O(n^2) average- & worst-case, O(n) best-case time complexity."),
 
         (lambda: list(merge_sort(trial)),
-         "Merge-sort is a non in-place implementation of the algorithm with O(n log n) complexity."),
+         "Merge-sort is a non in-place implementation of the algorithm with O(n log n) best- & worst-case time "
+         "complexity."),
 
         (lambda: quicksort(list(trial)),
-         "Quicksort is an in-place implementation of the algorithm with O(n log n) complexity."),
+         "Quicksort is an in-place implementation of the algorithm with O(n log n) best- & average-case, "
+         "O(n^2) worst-case time complexity."),
+
+        (lambda: merge_sort_2(list(trial)),
+         "Another mergesort implementation using iteration between two arrays instead of generators. Should use less "
+         "memory overall, but the space complexity is the same (O(n)).")
     ]:
         print()
         print(description)

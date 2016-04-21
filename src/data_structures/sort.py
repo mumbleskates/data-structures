@@ -35,13 +35,16 @@ def merge_sort(items, key=lambda x: x):
             right = sub_sort(start + left_length, length - left_length)
             # fetch the first item from each side
             left_item = next(left)
+            left_key = key(left_item)
             right_item = next(right)
+            right_key = key(right_item)
             while True:
-                if key(right_item) < key(left_item):
+                if right_key < left_key:
                     yield right_item
                     # advance right side
                     try:
                         right_item = next(right)
+                        right_key = key(right_item)
                     except StopIteration:  # no more in right side
                         # read out all the items still in the left side
                         yield left_item
@@ -53,6 +56,7 @@ def merge_sort(items, key=lambda x: x):
                     # advance left
                     try:
                         left_item = next(left)
+                        left_key = key(left_item)
                     except StopIteration:  # no more in left side
                         # read out all the items still in the right side
                         yield right_item
@@ -61,6 +65,58 @@ def merge_sort(items, key=lambda x: x):
                         return
 
     return sub_sort(0, len(items))
+
+
+def merge_sort_2(items, key=lambda x: x):
+    """Iterative implementation of merge sort with a scratch list. Mutates the given list to be sorted."""
+    if len(items) < 2:
+        return
+
+    source = items
+    scratch = [None] * len(items)
+
+    # With mini-run widths that double every iteration:
+    width = 1
+    while width < len(items):
+        for start in range(0, len(items), width * 2):
+            # merge source[start:start+width] and source[start+width:start+width*2] into scratch
+            mid = start + width
+            if mid >= len(items):
+                scratch[start:] = source[start:]
+                continue
+            left = start
+            right = mid
+            left_item = source[left]
+            left_key = key(left_item)
+            end = min(start + width + width, len(items))
+            right_item = source[right]
+            right_key = key(right_item)
+            for merged in range(start, start + width * 2):
+                if left_key <= right_key:
+                    scratch[merged] = left_item
+                    left += 1
+                    if left == mid:  # copy remaining righthand items
+                        scratch[right:end] = source[right:end]
+                        break
+                    left_item = source[left]
+                    left_key = key(left_item)
+                else:
+                    scratch[merged] = right_item
+                    right += 1
+                    if right == end:  # copy remaining lefthand items
+                        assert end - (merged + 1) == mid - left
+                        scratch[merged + 1:end] = source[left:mid]
+                        break
+                    right_item = source[right]
+                    right_key = key(right_item)
+        # use the old source list as the new scratch
+        source, scratch = scratch, source
+        # double the width for the next iteration
+        width <<= 1
+
+    if items is not source:
+        # copy our end results into the original list if we ended up with our results in the other
+        items[:] = source
 
 
 def _partition(items, start, end, pivot_index):
