@@ -97,7 +97,15 @@ def quicksort(items):
         if end - start < 2:  # do not sort 1 or less items
             return
 
-        pivot_index = _partition(items, start, end, start)
+        a, b, c = start, end - 1, (start + end) >> 1
+        if items[a] <= items[b] <= items[c] or items[c] <= items[b] <= items[a]:
+            pivot_index = b
+        elif items[b] <= items[a] <= items[c] or items[c] <= items[a] <= items[b]:
+            pivot_index = a
+        else:
+            pivot_index = c
+
+        pivot_index = _partition(items, start, end, pivot_index)
 
         sub_sort(start, pivot_index)
         sub_sort(pivot_index + 1, end)
