@@ -60,14 +60,30 @@ def merge_sort(items, key=lambda x: x):
     return sub_sort(0, len(items))
 
 
-def _median(a, b, c):
-    """Choose the median sorted value of three values"""
-    if a <= b <= c or c <= b <= a:
-        return b
-    elif b <= a <= c or c <= a <= b:
-        return a
-    else:
-        return c
+def _partition(items, start, end, pivot_index):
+    """Partition a range of a list across a pivot and return
+    the new index of the pivot."""
+    # move the pivot to the beginning of the range
+    pivot = items[pivot_index]  # swap our pivot out to the first slot in the range
+    items[start], items[pivot_index] = items[pivot_index], items[start]
+
+    # perform partition over the pivot
+    lo = start + 1  # start at the index after our pivot
+    hi = end - 1  # start at the last index in the range
+    while lo <= hi:
+        while lo <= hi and pivot < items[hi]:  # find an item in the large side that doesn't belong
+            hi -= 1
+        while lo <= hi and items[lo] <= pivot:  # find an item on the small side that doesn't belong
+            lo += 1
+        if hi < lo:  # our ends have met, the partitioning is done
+            break
+        items[lo], items[hi] = items[hi], items[lo]  # swap ill fitting items to the correct sides
+        lo += 1
+        hi -= 1
+
+    # move the pivot back to the center; the item at [hi] belongs in the low side at this point
+    items[start], items[hi] = items[hi], items[start]
+    return hi  # our pivot is now at [hi]
 
 
 def quicksort(items):
@@ -81,25 +97,7 @@ def quicksort(items):
         if end - start < 2:  # do not sort 1 or less items
             return
 
-        pivot = _median(
-            items[start],  # first
-            items[(start + end) >> 1],  # middle
-            items[end - 1]  # last
-        )
-
-        # perform
-        lo = start
-        hi = end - 1
-        while lo < hi:
-            while items[lo] < pivot:
-                lo += 1
-            while pivot < items[hi]:
-                hi -= 1
-            # now, items[hi] <= pivot <= items[lo]
-            # swap hi and lo
-            items[lo], items[hi] = items[hi], items[lo]
-
-        pivot_index = hi
+        pivot_index = _partition(items, start, end, start)
 
         sub_sort(start, pivot_index)
         sub_sort(pivot_index + 1, end)
