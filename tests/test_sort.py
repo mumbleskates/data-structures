@@ -49,3 +49,35 @@ def test_quicksort(items, expected):
     items = list(items)
     quicksort(items)
     assert items == expected
+
+
+if __name__ == '__main__':
+    import random
+    from timeit import timeit
+
+    RUN_COUNT = 100
+
+    small = [random.randint(0, 1023) for _ in range(10)]
+    medium = [random.randint(0, 1023) for _ in range(100)]
+    large = [random.randint(0, 1023) for _ in range(1000)]
+
+    print("-- Sorting algorithm module --")
+
+    for alg, description in [
+        (lambda: insertion_sort(list(trial)),
+         "Insertion-sort is an in-place algorithm with O(n^2) time complexity."),
+
+        (lambda: list(merge_sort(trial)),
+         "Merge-sort is a non in-place implementation of the algorithm with O(n log n) complexity."),
+
+        (lambda: quicksort(list(trial)),
+         "Quicksort is an in-place implementation of the algorithm with O(n log n) complexity."),
+    ]:
+        print()
+        print(description)
+        for trial in (small, medium, large):
+            print("\t{0:.7f} seconds for {1} runs on a {2} item list".format(
+                timeit(alg, number=RUN_COUNT),
+                RUN_COUNT,
+                len(trial)
+            ))
