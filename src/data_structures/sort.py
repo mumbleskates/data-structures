@@ -3,7 +3,8 @@ from builtins import range
 
 
 def insertion_sort(items, key=lambda x: x):
-    """Implementation of an in-place insertion sort algorithm."""
+    """Implementation of an in-place insertion sort algorithm. Best case time complexity
+    is O(1), averege and worst case are both O(n^2)."""
     for i, item in enumerate(items):
         for i in reversed(range(i)):
             compare_item = items[i]
@@ -20,7 +21,9 @@ def insertion_sort(items, key=lambda x: x):
 
 def merge_sort(items, key=lambda x: x):
     """Return a generator that uses merge-sort to return the items of the list
-    in sorted order."""
+    in sorted order. Best case and worst case time complexity are both O(n log n).
+
+    The algorithm is generally rather faster than quicksort, but requires more space."""
     def sub_sort(start, length):
         if length < 1:
             return
@@ -87,7 +90,8 @@ def _partition(items, start, end, pivot_index):
 
 
 def quicksort(items):
-    """Sort the given list in-place with the quicksort algorithm."""
+    """Sort the given list in-place with the quicksort algorithm. Best case time complexity
+    is O(n log n), worst case (rare) is O(n^2)."""
     def sub_sort(start, end):
         # Start is the inclusive first index of the partition, and end
         # is the exclusive last index
