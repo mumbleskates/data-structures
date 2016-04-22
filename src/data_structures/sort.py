@@ -171,3 +171,41 @@ def quicksort(items):
         sub_sort(pivot_index + 1, end)
 
     sub_sort(0, len(items))
+
+
+if __name__ == '__main__':  # pragma: no cover
+    import random
+    from timeit import timeit
+
+    RUN_COUNT = 100
+
+    small = [random.randint(0, 1023) for _ in range(10)]
+    medium = [random.randint(0, 1023) for _ in range(100)]
+    large = [random.randint(0, 1023) for _ in range(1000)]
+
+    print("-- Sorting algorithm module --")
+
+    for alg, description in [
+        (lambda: insertion_sort(list(trial)),
+         "Insertion-sort is an in-place algorithm with O(n^2) average- & worst-case, O(n) best-case time complexity."),
+
+        (lambda: list(merge_sort(trial)),
+         "Merge-sort is a non in-place implementation of the algorithm with O(n log n) best- & worst-case time "
+         "complexity."),
+
+        (lambda: quicksort(list(trial)),
+         "Quicksort is an in-place implementation of the algorithm with O(n log n) best- & average-case, "
+         "O(n^2) worst-case time complexity."),
+
+        (lambda: merge_sort_2(list(trial)),
+         "Another mergesort implementation using iteration between two arrays instead of generators. Should use less "
+         "memory overall, but the space complexity is the same (O(n)).")
+    ]:
+        print()
+        print(description)
+        for trial in (small, medium, large):
+            print("\t{0:.7f} seconds for {1} runs on a {2} item list".format(
+                timeit(alg, number=RUN_COUNT),
+                RUN_COUNT,
+                len(trial)
+            ))
