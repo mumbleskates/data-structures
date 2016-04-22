@@ -1,6 +1,6 @@
 # coding=utf-8
 import pytest
-from data_structures.sort import insertion_sort, merge_sort, quicksort, merge_sort_2
+from data_structures.sort import insertion_sort, merge_sort, quicksort, merge_sort_2, radix_sort
 
 
 UNSORTED_LISTS = [
@@ -62,3 +62,12 @@ def test_quicksort(items, expected):
     items = list(items)
     quicksort(items)
     assert items == expected
+
+@pytest.mark.parametrize('items, expected', zip(UNSORTED_LISTS, SORTED_LISTS))
+def test_radix_sort(items, expected):
+    items = list(items)
+    radix_sort(items)
+    assert items == expected
+
+def test_radix_sort_stability():
+    pass
