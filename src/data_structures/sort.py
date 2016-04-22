@@ -1,6 +1,14 @@
 # -*- coding: utf-8 -*-
 from builtins import range
+
 from itertools import chain
+
+
+try:
+    # noinspection PyUnresolvedReferences
+    _INT_TYPES = (int, long)
+except NameError:  # pragma: no cover
+    _INT_TYPES = (int,)
 
 
 def insertion_sort(items, key=lambda x: x):
@@ -180,7 +188,7 @@ def _hex_length(positive_int):
     return ((positive_int.bit_length() - 1) >> 2) + 1
 
 
-def radix_sort(items):
+def radix_sort(items, key=lambda x: x):
     """Sort the given list with the radix sort algorithm."""
     # something that keeps track of the length of the longest number
     # something that keepst track of which iteration we are doing
@@ -191,10 +199,14 @@ def radix_sort(items):
     while True:
         buckets = [[] for _ in range(16)]
         for item in items:
-            digit = (item >> digit_shift * 4) & 15  # 0b1111, 0xf
+            item_key = key(item)
+            # make sure key is a valid positive integer
+            if not isinstance(item_key, _INT_TYPES) or item_key < 0:
+                raise TypeError("Keys or items must be positive integers", item_key)
+            digit = (item_key >> digit_shift * 4) & 15  # 0b1111, 0xf
             buckets[digit].append(item)
             if not have_longest_num:
-                longest_num = max(longest_num, _hex_length(item))
+                longest_num = max(longest_num, _hex_length(item_key))
                 # longest number will eventually be the len of our longest num
         have_longest_num = True
         for i, item in enumerate(chain(*buckets)):
@@ -230,7 +242,12 @@ if __name__ == '__main__':  # pragma: no cover
 
         (lambda: merge_sort_2(list(trial)),
          "Another mergesort implementation using iteration between two arrays instead of generators. Should use less "
-         "memory overall, but the space complexity is the same (O(n)).")
+         "memory overall, but the space complexity is the same (O(n))."),
+
+        (lambda: radix_sort(list(trial)),
+         "Radix sort is an efficient sorting algorithm that orders numbers by taking them apart digit by digit "
+         "rather than comparing them directly. Time complexity is always a virtually constant O(n log k), where k is "
+         "the length of the largest number (in this case, in hexadecimal).")
     ]:
         print()
         print(description)
