@@ -1,6 +1,15 @@
 # -*- coding: utf-8 -*-
 from builtins import range
 
+from itertools import chain
+
+
+try:
+    # noinspection PyUnresolvedReferences
+    _INT_TYPES = (int, long)
+except NameError:  # pragma: no cover
+    _INT_TYPES = (int,)
+
 
 def insertion_sort(items, key=lambda x: x):
     """Implementation of an in-place insertion sort algorithm. Best case time complexity
@@ -173,6 +182,40 @@ def quicksort(items):
     sub_sort(0, len(items))
 
 
+def _hex_length(positive_int):
+    """Return the number of hexadecimal digits necessary to
+    represent the given number."""
+    return ((positive_int.bit_length() - 1) >> 2) + 1
+
+
+def radix_sort(items, key=lambda x: x):
+    """Sort the given list with the radix sort algorithm."""
+    # something that keeps track of the length of the longest number
+    # something that keepst track of which iteration we are doing
+    digit_shift = 0
+    longest_num = 0  # some value, largest's numbers number of digits
+    # go over list once to determine the above
+    have_longest_num = False
+    while True:
+        buckets = [[] for _ in range(16)]
+        for item in items:
+            item_key = key(item)
+            # make sure key is a valid positive integer
+            if not isinstance(item_key, _INT_TYPES) or item_key < 0:
+                raise TypeError("Keys or items must be positive integers", item_key)
+            digit = (item_key >> digit_shift * 4) & 15  # 0b1111, 0xf
+            buckets[digit].append(item)
+            if not have_longest_num:
+                longest_num = max(longest_num, _hex_length(item_key))
+                # longest number will eventually be the len of our longest num
+        have_longest_num = True
+        for i, item in enumerate(chain(*buckets)):
+            items[i] = item
+        digit_shift += 1
+        if digit_shift >= longest_num:  # that was the last iteration
+            break
+
+
 if __name__ == '__main__':  # pragma: no cover
     import random
     from timeit import timeit
@@ -199,7 +242,12 @@ if __name__ == '__main__':  # pragma: no cover
 
         (lambda: merge_sort_2(list(trial)),
          "Another mergesort implementation using iteration between two arrays instead of generators. Should use less "
-         "memory overall, but the space complexity is the same (O(n)).")
+         "memory overall, but the space complexity is the same (O(n))."),
+
+        (lambda: radix_sort(list(trial)),
+         "Radix sort is an efficient sorting algorithm that orders numbers by taking them apart digit by digit "
+         "rather than comparing them directly. Time complexity is always a virtually constant O(n log k), where k is "
+         "the length of the largest number (in this case, in hexadecimal).")
     ]:
         print()
         print(description)

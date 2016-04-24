@@ -1,6 +1,6 @@
 # coding=utf-8
 import pytest
-from data_structures.sort import insertion_sort, merge_sort, quicksort, merge_sort_2
+from data_structures.sort import insertion_sort, merge_sort, quicksort, merge_sort_2, radix_sort
 
 
 UNSORTED_LISTS = [
@@ -61,4 +61,35 @@ def test_merge_sort_2_stability():
 def test_quicksort(items, expected):
     items = list(items)
     quicksort(items)
+    assert items == expected
+
+
+@pytest.mark.parametrize('items, expected', zip(UNSORTED_LISTS, SORTED_LISTS))
+def test_radix_sort(items, expected):
+    items = list(items)
+    radix_sort(items)
+    assert items == expected
+
+
+def test_radix_sort_invalid_values():
+    with pytest.raises(TypeError):
+        radix_sort([3, 2, 1, 0, -1, -2])
+    with pytest.raises(TypeError):
+        radix_sort(["not an integer", "also not an integer", None, pytest])
+
+
+def test_radix_sort_stability():
+    from operator import itemgetter
+    key_func = itemgetter(0)
+    items = [
+        (0, 'b'),
+        (398, 'another thing'),
+        (1, 'something'),
+        (0, 'a'),
+        (1, 'something else'),
+        (399, 'whatever'),
+        (398, '!aaaa'),
+    ]
+    expected = sorted(items, key=key_func)
+    radix_sort(items, key=key_func)
     assert items == expected
