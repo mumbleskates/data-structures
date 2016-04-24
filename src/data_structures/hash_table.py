@@ -4,7 +4,7 @@ try:
     # expected NameError
     # noinspection PyUnresolvedReferences
     STR_TYPES = (str, unicode)
-except NameError:
+except NameError:  # pragma: no cover
     STR_TYPES = (bytes, str)
 
 
