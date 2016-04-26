@@ -86,7 +86,8 @@ class HashTable(object):
     def _grow(self):
         """Double the size of the hash table."""
         old_table = self._table
-        self._table = [None] * (len(self._table) << 1)
+        grow_factor = 2 if len(self._table) < (1 << 15) else 1
+        self._table = [None] * (len(self._table) << grow_factor)
         for slot in old_table:
             if slot:
                 for i in self._walk_slots(slot[0]):
