@@ -27,3 +27,5 @@ class Trie(object):
             return self._edges[token[0]].contains(token[1:])
         else:
             return False
+
+    __contains__ = contains
