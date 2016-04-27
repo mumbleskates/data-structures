@@ -47,25 +47,51 @@ class ShortTrie(object):
 
     def __init__(self):
         """Create an empty trie."""
-        self._edges = {}
+        self._edges = {}  # a dictionary of first character: more characters, child node
         self._terminates = False
 
     def insert(self, token):
         """Insert token if not already in trie."""
         if not token:
             self._terminates = True
+            return
+
+        leader = token[0]
+        if token[0] in self._edges:
+            # an edge starts with the same character as this token
+            token = token[1:]  # cut off first symbol
+            more, child = self._edges[leader]
+            if token.startswith(more):
+                # the new token starts with the same run of characters as the current child there
+                # i.e. edge is 'app', new token is 'apply'
+                child.insert(token[len(more):])  # recurse down with 'ly'
+            else:
+                # there is only a partial match here, i.e. edge is 'apples', token is 'application'
+                # cut the edge's label and insert a new node
+                matched = _beginning_match(token, more)  # 4, the length of the common 'appl'
+                our_more = more[:matched]  # shortened run for this node ('appl')
+                new_edge = more[matched:]  # edge label for our current child in the new node ('es')
+                # insert a new node between ourselves and the curent child there
+                new_child = ShortTrie()
+                self._edges[leader] = our_more, new_child  # 'appl' points to new node
+                new_child._edges[new_edge[0]] = new_edge[1:], child  # new node's 'es' edge points to the old child
+                new_child.insert(token[matched:])  # insert 'ication' into the new node at 'appl'
         else:
-            child = self._edges.get(token[0])
-            if child is None:
-                child = self._edges[token[0]] = Trie()
-            child.insert(token[1:])
+            # no edges start with this token's first character, insert the whole thing with one edge
+            child = ShortTrie()
+            self._edges[token[0]] = token[1:], child
+            child._terminates = True
 
     def contains(self, token):
         """Return true if token is in trie."""
         if not token:
             return self._terminates
         elif token[0] in self._edges:
-            return self._edges[token[0]].contains(token[1:])
+            more, child = self._edges[token[0]]
+            token = token[1:]  # cut off first symbol
+            if not token.startswith(more):
+                return False  # does not fully match this edge
+            return child.contains(token[len(more):])
         else:
             return False
 
