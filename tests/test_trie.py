@@ -40,6 +40,7 @@ def test_insert():
 OVERLAPPING_WORD_SETS = [
     ['apple', 'application'],
     ['a', 'ab', 'abc', 'abcd', 'afeijf'],
+    ['ab', 'abc'],
     words,
 ]
 
