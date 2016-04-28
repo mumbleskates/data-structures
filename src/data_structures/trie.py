@@ -30,18 +30,24 @@ class Trie(object):
 
     __contains__ = contains
 
-    def _iterate(self, prefix=None):
-        """Iterate over items in the trie"""
-        if self._terminates:
-            yield prefix
-        for edge, child in self._edges.items():
-            # noinspection PyProtectedMember
-            for item in child._iterate(edge if prefix is None else prefix + edge):
-                yield item
-
+    # noinspection PyProtectedMember
     def __iter__(self):
-        # noinspection PyTypeChecker
-        return self._iterate(None)
+        stack = (None, None, None, None)  # singly linked list stack of loop context vars
+        node = self
+        prefix = None
+        edge_items = iter(node._edges.items())  # iterator over the edges
+        while node is not None:
+            try:
+                edge, new_node = next(edge_items)
+                stack = (stack, node, prefix, edge_items)
+                node = new_node
+                prefix = edge if prefix is None else prefix + edge
+                edge_items = iter(node._edges.items())
+                if node._terminates:
+                    yield prefix
+                continue
+            except StopIteration:
+                stack, node, prefix, edge_items = stack
 
 
 def _beginning_match(a, b):
@@ -110,16 +116,21 @@ class ShortTrie(object):
 
     __contains__ = contains
 
-    def _iterate(self, prefix):
-        """Iterate over items in the trie"""
-        if self._terminates:
-            yield prefix
-        for leader, (more, child) in self._edges.items():
-            edge_label = leader + more
-            # noinspection PyProtectedMember
-            for item in child._iterate(edge_label if prefix is None else prefix + edge_label):
-                yield item
-
+    # noinspection PyProtectedMember
     def __iter__(self):
-        # noinspection PyTypeChecker
-        return self._iterate(None)
+        stack = (None, None, None, None)  # singly linked list stack of loop context vars
+        node = self
+        prefix = None
+        edge_items = iter(node._edges.items())  # iterator over the edges
+        while node is not None:
+            try:
+                leader, (more, new_node) = next(edge_items)
+                stack = (stack, node, prefix, edge_items)
+                node = new_node
+                prefix = leader + more if prefix is None else prefix + leader + more
+                edge_items = iter(node._edges.items())
+                if node._terminates:
+                    yield prefix
+                continue
+            except StopIteration:
+                stack, node, prefix, edge_items = stack
