@@ -11,7 +11,7 @@ mock.patch.object = mock.patch.object
 def _words():
     with open('test_data/words.txt', 'r') as f:
         return set(word.strip() for word in f)
-words = list(_words())
+words = list(_words())[:1000]
 
 
 class UsageCounter(object):
@@ -100,3 +100,20 @@ def test_contains(trie_type):
         assert word in trie
     for word in words_b:
         assert word not in trie
+
+
+@pytest.mark.parametrize('trie_type', (Trie, ShortTrie))
+def test_iteration(trie_type):
+    trie = trie_type()
+    for word in words:
+        trie.insert(word)
+    iterated = list(trie)
+    unique_iterated = set(iterated)
+    assert len(iterated) == len(unique_iterated)
+    assert unique_iterated == set(words)
+
+
+@pytest.mark.parametrize('trie_type', (Trie, ShortTrie))
+def test_iteration_empty(trie_type):
+    trie = trie_type()
+    assert list(trie) == []
