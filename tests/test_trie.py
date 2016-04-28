@@ -2,7 +2,7 @@
 import mock
 import pytest
 
-from data_structures.trie import Trie
+from data_structures.trie import Trie, ShortTrie
 
 # inspector doesn't see this otherwise
 mock.patch.object = mock.patch.object
@@ -11,7 +11,7 @@ mock.patch.object = mock.patch.object
 def _words():
     with open('test_data/words.txt', 'r') as f:
         return set(word.strip() for word in f)
-words = list(_words())
+words = list(_words())[:1000]
 
 
 class UsageCounter(object):
@@ -26,13 +26,15 @@ class UsageCounter(object):
         return dec
 
 
-def test_init():
-    Trie()
+@pytest.mark.parametrize('trie_type', (Trie, ShortTrie))
+def test_init(trie_type):
+    trie_type()
 
 
-def test_insert():
+@pytest.mark.parametrize('trie_type', (Trie, ShortTrie))
+def test_insert(trie_type):
     for word in words:
-        trie = Trie()
+        trie = trie_type()
         trie.insert(word)
         assert trie.contains(word)
 
@@ -40,16 +42,18 @@ def test_insert():
 OVERLAPPING_WORD_SETS = [
     ['apple', 'application'],
     ['a', 'ab', 'abc', 'abcd', 'afeijf'],
+    ['ab', 'abc'],
     words,
 ]
 
 
+@pytest.mark.parametrize('trie_type', (Trie, ShortTrie))
 @pytest.mark.parametrize('values', OVERLAPPING_WORD_SETS)
-def test_values_overlap(values):
+def test_values_overlap(values, trie_type):
     counter = UsageCounter()
     # count the number of Trie objects that get initialized
-    with mock.patch.object(Trie, "__init__", counter.wrap(Trie.__init__)):
-        trie = Trie()
+    with mock.patch.object(trie_type, "__init__", counter.wrap(trie_type.__init__)):
+        trie = trie_type()
         total_length = 0
         for word in values:
             trie.insert(word)
@@ -58,17 +62,37 @@ def test_values_overlap(values):
     assert total_length > counter.count
 
 
-def test_contains_empty():
-    trie = Trie()
+SHORTENABLE = [
+    ["a longish string"],
+    ["a sentence split part", "a sentence split partway through"],
+    ["abcdefg", "abcdefghijklmnop", "abcdefghijklmnopqrstuvwxy", "abcdefghijklmnopqrstuvwxyz"],
+]
+
+
+@pytest.mark.parametrize('values', SHORTENABLE)
+def test_tree_shortens(values):
+    counter = UsageCounter()
+    # count the number of Trie objects that get initialized
+    with mock.patch.object(ShortTrie, "__init__", counter.wrap(ShortTrie.__init__)):
+        trie = ShortTrie()
+        for value in values:
+            trie.insert(value)
+    assert counter.count == 1 + len(values)
+
+
+@pytest.mark.parametrize('trie_type', (Trie, ShortTrie))
+def test_contains_empty(trie_type):
+    trie = trie_type()
     assert '' not in trie
 
 
-def test_contains():
+@pytest.mark.parametrize('trie_type', (Trie, ShortTrie))
+def test_contains(trie_type):
     half = len(words) >> 1
     words_a = words[:half]
     words_b = words[half:]
 
-    trie = Trie()
+    trie = trie_type()
     for word in words_a:
         trie.insert(word)
 
@@ -76,3 +100,20 @@ def test_contains():
         assert word in trie
     for word in words_b:
         assert word not in trie
+
+
+@pytest.mark.parametrize('trie_type', (Trie, ShortTrie))
+def test_iteration(trie_type):
+    trie = trie_type()
+    for word in words:
+        trie.insert(word)
+    iterated = list(trie)
+    unique_iterated = set(iterated)
+    assert len(iterated) == len(unique_iterated)
+    assert unique_iterated == set(words)
+
+
+@pytest.mark.parametrize('trie_type', (Trie, ShortTrie))
+def test_iteration_empty(trie_type):
+    trie = trie_type()
+    assert list(trie) == []
