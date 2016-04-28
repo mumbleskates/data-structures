@@ -1,4 +1,6 @@
 # -*- coding: utf -8 -*-
+from builtins import next, range, zip
+
 from collections import deque
 
 
@@ -51,33 +53,33 @@ class Trie(object):
                 if node._terminates:
                     yield prefix
 
+    # noinspection PyProtectedMember
     def breadth_first(self, prefix=None):
         """Helper breadth first traversal function for auto complete."""
-        q = deque((self, prefix))
+        q = deque()
+        q.appendleft((self, prefix))
         while q:
             node, prefix = q.pop()
             if node._terminates:
                 yield prefix
-            for edge, child in self._edges.items():
+            for edge, child in node._edges.items():
                 q.appendleft((child, edge if prefix is None else prefix + edge))
 
     def auto_complete(self, token, max_results=4):
         """Trie auto complete."""
         node = self
         prefix = token
+        # traverse down until we have found the node that matches the given token
         while token:
             edge, token = token[:1], token[1:]
             if edge not in node._edges:
-                return
+                return  # there are no entries with that prefix
             else:
                 node = node._edges[edge]
-        for item, _ in zip(node.breadth_first(prefix), range(max_results)):
-            yield item
-
-        # traverse until you've covered the string that is being auto-completed
         # iterate ovr the children breadth first from there
         # return default maximum of 4 tokens
-
+        for item, _ in zip(node.breadth_first(prefix), range(max_results)):
+            yield item
 
 
 def _beginning_match(a, b):
@@ -165,3 +167,36 @@ class ShortTrie(object):
                 edge_items = iter(node._edges.items())
                 if node._terminates:
                     yield prefix
+
+    # noinspection PyProtectedMember
+    def breadth_first(self, prefix=None):
+        """Helper breadth first traversal function for auto complete."""
+        q = deque()
+        q.appendleft((self, prefix))
+        while q:
+            node, prefix = q.pop()
+            if node._terminates:
+                yield prefix
+            for leader, (more, child) in node._edges.items():
+                edge = leader + more
+                q.appendleft((child, edge if prefix is None else prefix + edge))
+
+    def auto_complete(self, token, max_results=4):
+        """Trie auto complete."""
+        node = self
+        prefix = token
+        # traverse down until we have found the node that matches the given token
+        while token:
+            leader, token = token[:1], token[1:]
+            if leader not in node._edges:
+                return  # there are no entries with that next letter
+            else:
+                more, node = node._edges[leader]
+                if not token.startswith(more):
+                    return  # the whole edge isn't in the given token, either
+                # cut off the rest of the edge label and continue
+                token = token[len(more):]
+        # iterate ovr the children breadth first from there
+        # return default maximum of 4 tokens
+        for item, _ in zip(node.breadth_first(prefix), range(max_results)):
+            yield item
