@@ -1,4 +1,5 @@
 # -*- coding: utf -8 -*-
+from collections import deque
 
 
 class Trie(object):
@@ -49,6 +50,34 @@ class Trie(object):
                 edge_items = iter(node._edges.items())
                 if node._terminates:
                     yield prefix
+
+    def breadth_first(self, prefix=None):
+        """Helper breadth first traversal function for auto complete."""
+        q = deque((self, prefix))
+        while q:
+            node, prefix = q.pop()
+            if node._terminates:
+                yield prefix
+            for edge, child in self._edges.items():
+                q.appendleft((child, edge if prefix is None else prefix + edge))
+
+    def auto_complete(self, token, max_results=4):
+        """Trie auto complete."""
+        node = self
+        prefix = token
+        while token:
+            edge, token = token[:1], token[1:]
+            if edge not in node._edges:
+                return
+            else:
+                node = node._edges[edge]
+        for item, _ in zip(node.breadth_first(prefix), range(max_results)):
+            yield item
+
+        # traverse until you've covered the string that is being auto-completed
+        # iterate ovr the children breadth first from there
+        # return default maximum of 4 tokens
+
 
 
 def _beginning_match(a, b):
