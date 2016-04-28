@@ -12,6 +12,6 @@ setup(
     package_dir={"": "src"},
     install_requires=['future'],
     extras_require={
-        'test': ['pytest-cov', 'tox']
+        'test': ['pytest-cov', 'tox', 'mock']
     },
 )
