@@ -1,4 +1,6 @@
 # -*- coding: utf -8 -*-
+from builtins import open
+
 import mock
 import pytest
 
@@ -11,7 +13,7 @@ mock.patch.object = mock.patch.object
 def _words():
     with open('test_data/words.txt', 'r') as f:
         return set(word.strip() for word in f)
-words = list(_words())[:1000]
+words = list(_words())[:5000]
 
 
 class UsageCounter(object):
@@ -117,3 +119,57 @@ def test_iteration(trie_type):
 def test_iteration_empty(trie_type):
     trie = trie_type()
     assert list(trie) == []
+
+
+@pytest.mark.parametrize('trie_type', (Trie, ShortTrie))
+def test_breadth_first(trie_type):
+    trie = trie_type()
+    for item in [
+        "abc",
+        "abcdef",
+        "abcdefghi",
+        "abcdef456",
+        "abc123",
+        "abc123ghi",
+        "abc123456",
+    ]:
+        trie.insert(item)
+    breadth = list(trie.breadth_first())
+    assert len(breadth) == 7
+    middle = ["abcdef", "abc123"]
+    bottom = ["abcdefghi", "abcdef456", "abc123ghi", "abc123456"]
+    assert breadth[0] == "abc"
+    assert all(item in middle for item in breadth[1:3])
+    assert all(item in bottom for item in breadth[3:])
+
+
+@pytest.mark.parametrize('trie_type', (Trie, ShortTrie))
+@pytest.mark.parametrize('prefix', ["", "prefix_"])
+def test_breadth_first_many(trie_type, prefix):
+    trie = trie_type()
+    for word in words:
+        trie.insert(word)
+    iterated = list(trie.breadth_first(prefix=prefix))
+    unique_iterated = set(iterated)
+    assert len(iterated) == len(unique_iterated)
+    assert unique_iterated == set(prefix + word for word in words)
+
+
+AUTOCOMPLETE_DATA = [
+    (['a', 'ab', 'abc', 'abcd', 'aardvark', 'asdffasg', 'asdf', 'bsdf', 'absolutel', '5'], 'a'),
+    (['a', 'ab', 'abc', 'abcd', 'aardvark', 'asdffasg', 'asdf', 'bsdf', 'absolutel', '5'], 'as'),
+    (['a', 'ab', 'abc', 'abcd', 'aardvark', 'asdffasg', 'asdf', 'bsdf', 'absolutel', '5'], ''),
+    ([], 'something'),
+]
+
+
+@pytest.mark.parametrize('trie_type', (Trie, ShortTrie))
+@pytest.mark.parametrize('items, token', AUTOCOMPLETE_DATA)
+@pytest.mark.parametrize('limit', [0, 1, 4, 1000000000])
+def test_autocomplete(trie_type, items, token, limit):
+    trie = trie_type()
+    for item in items:
+        trie.insert(item)
+    autocompleted = list(trie.auto_complete(token, max_results=limit))
+    assert len(autocompleted) <= limit
+    assert all(auto.startswith(token) for auto in autocompleted)
