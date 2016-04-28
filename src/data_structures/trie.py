@@ -32,6 +32,7 @@ class Trie(object):
 
     # noinspection PyProtectedMember
     def __iter__(self):
+        """Traversing the trie depth-first."""
         stack = (None, None, None, None)  # singly linked list stack of loop context vars
         node = self
         prefix = None
@@ -39,15 +40,15 @@ class Trie(object):
         while node is not None:
             try:
                 edge, new_node = next(edge_items)
+            except StopIteration:
+                stack, node, prefix, edge_items = stack
+            else:
                 stack = (stack, node, prefix, edge_items)
                 node = new_node
                 prefix = edge if prefix is None else prefix + edge
                 edge_items = iter(node._edges.items())
                 if node._terminates:
                     yield prefix
-                continue
-            except StopIteration:
-                stack, node, prefix, edge_items = stack
 
 
 def _beginning_match(a, b):
@@ -118,6 +119,7 @@ class ShortTrie(object):
 
     # noinspection PyProtectedMember
     def __iter__(self):
+        """Traversing the short-trie depth-first."""
         stack = (None, None, None, None)  # singly linked list stack of loop context vars
         node = self
         prefix = None
@@ -125,12 +127,12 @@ class ShortTrie(object):
         while node is not None:
             try:
                 leader, (more, new_node) = next(edge_items)
+            except StopIteration:
+                stack, node, prefix, edge_items = stack
+            else:
                 stack = (stack, node, prefix, edge_items)
                 node = new_node
                 prefix = leader + more if prefix is None else prefix + leader + more
                 edge_items = iter(node._edges.items())
                 if node._terminates:
                     yield prefix
-                continue
-            except StopIteration:
-                stack, node, prefix, edge_items = stack
