@@ -6,6 +6,21 @@
 
 ## This project contains sample code for implementing the following structures:
 
+### Trie
+Ordered tree data structure used to store an associative array where we care about the path to the leaf, rather than any individual content of a node. Implements insert and contains methods.
+
+### Insertion Sort
+Insertion-sort is an in-place sorting algorithm with O(n^2) average- & worst-case, O(n) best-case time complexity.
+
+### Merge Sort
+Merge-sort is a non in-place sorting algorithm with O(n log n) best- & worst-case time complexity.
+
+### Radix Sort
+Radix sort is an efficient sorting algorithm that orders numbers by taking them apart digit by digit rather than comparing them directly. Time complexity is always a virtually constant O(n log k), where k is the length of the largest number (in this case, in hexadecimal).
+
+### Quick Sort
+Quicksort is an in-place sorting algorithm with O(n log n) best- & average-case, O(n^2) worst-case time complexity.
+
 ### Binary Search Tree
 A Python implementation of a Binary Search Tree (BST). The value of each node in the BST is greater than the values stored in its left sub-tree, and smaller than the values in its right sub-tree. 
 The BST has four traveral patterns: in-order, pre-order, post-order, and breadth-first.
