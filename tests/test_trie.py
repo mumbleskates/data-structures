@@ -13,7 +13,7 @@ mock.patch.object = mock.patch.object
 def _words():
     with open('test_data/words.txt', 'r') as f:
         return set(word.strip() for word in f)
-words = list(_words())[:5000]
+words = list(_words())[:2000]
 
 
 class UsageCounter(object):
