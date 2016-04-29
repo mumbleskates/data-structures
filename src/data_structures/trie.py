@@ -193,7 +193,13 @@ class ShortTrie(object):
             else:
                 more, node = node._edges[leader]
                 if not token.startswith(more):
-                    return  # the whole edge isn't in the given token, either
+                    if more.startswith(token):
+                        # token ends partway down this edge without diverging
+                        # add the remainder of this edge to the prefix and go traverse
+                        prefix += more[len(token):]
+                        break
+                    else:
+                        return  # the whole edge isn't in the given token, either
                 # cut off the rest of the edge label and continue
                 token = token[len(more):]
         # iterate ovr the children breadth first from there

@@ -1,5 +1,5 @@
 # -*- coding: utf -8 -*-
-from builtins import open
+from builtins import input, open
 
 import mock
 import pytest
@@ -156,20 +156,40 @@ def test_breadth_first_many(trie_type, prefix):
 
 
 AUTOCOMPLETE_DATA = [
-    (['a', 'ab', 'abc', 'abcd', 'aardvark', 'asdffasg', 'asdf', 'bsdf', 'absolutel', '5'], 'a'),
-    (['a', 'ab', 'abc', 'abcd', 'aardvark', 'asdffasg', 'asdf', 'bsdf', 'absolutel', '5'], 'as'),
-    (['a', 'ab', 'abc', 'abcd', 'aardvark', 'asdffasg', 'asdf', 'bsdf', 'absolutel', '5'], ''),
-    ([], 'something'),
+    (['a', 'ab', 'abc', 'abcd', 'aardvark', 'asdffasg', 'asdf', 'bsdf', 'absolutel', '5'], 'a', 8),
+    (['a', 'ab', 'abc', 'abcd', 'aardvark', 'asdffasg', 'asdf', 'bsdf', 'absolutel', '5'], 'as', 2),
+    (['a', 'ab', 'abc', 'abcd', 'aardvark', 'asdffasg', 'asdf', 'bsdf', 'absolutel', '5'], '', 10),
+    (['a', 'ab', 'abc', 'abcd', 'aardvark', 'asdffasg', 'asdf', 'bsdf', 'absolutel', '5'], 'aard&#$*', 0),
+    ([], 'something', 0),
 ]
 
 
-@pytest.mark.parametrize('trie_type', (Trie, ShortTrie))
-@pytest.mark.parametrize('items, token', AUTOCOMPLETE_DATA)
+@pytest.mark.parametrize('items, token, most', AUTOCOMPLETE_DATA)
 @pytest.mark.parametrize('limit', [0, 1, 4, 1000000000])
-def test_autocomplete(trie_type, items, token, limit):
-    trie = trie_type()
+def test_autocomplete(items, token, most, limit):
+    trie = Trie()
+    s_trie = ShortTrie()
     for item in items:
         trie.insert(item)
+        s_trie.insert(item)
     autocompleted = list(trie.auto_complete(token, max_results=limit))
-    assert len(autocompleted) <= limit
-    assert all(auto.startswith(token) for auto in autocompleted)
+    short_auto = list(s_trie.auto_complete(token, max_results=limit))
+    assert len(autocompleted) == len(short_auto) == min(most, limit)
+    assert all(auto.startswith(token) for auto in autocompleted + short_auto)
+    assert all(len(x) == len(set(x)) for x in (autocompleted, short_auto))
+
+
+def main():
+    trie = ShortTrie()
+    for word in _words():
+        trie.insert(word)
+    while True:
+        token = input("Enter word to autocomplete (or '!' to quit): ")
+        if token == "!":
+            break
+        print("\n".join(trie.auto_complete(token, max_results=8)))
+        print("-------")
+
+
+if __name__ == '__main__':
+    main()
