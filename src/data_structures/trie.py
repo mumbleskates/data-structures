@@ -1,4 +1,13 @@
 # -*- coding: utf -8 -*-
+from builtins import next, range, zip
+
+from collections import deque
+
+try:
+    # noinspection PyUnresolvedReferences
+    STR_TYPES = str, unicode
+except NameError:  # pragma: no cover
+    STR_TYPES = bytes, str
 
 
 class Trie(object):
@@ -50,6 +59,34 @@ class Trie(object):
                 if node._terminates:
                     yield prefix
 
+    # noinspection PyProtectedMember
+    def breadth_first(self, prefix=None):
+        """Helper breadth first traversal function for auto complete."""
+        q = deque()
+        q.appendleft((self, prefix))
+        while q:
+            node, prefix = q.pop()
+            if node._terminates:
+                yield prefix
+            for edge, child in node._edges.items():
+                q.appendleft((child, edge if prefix is None else prefix + edge))
+
+    def auto_complete(self, token, max_results=4):
+        """Trie auto complete."""
+        node = self
+        prefix = token
+        # traverse down until we have found the node that matches the given token
+        while token:
+            edge, token = token[:1], token[1:]
+            if edge not in node._edges:
+                return  # there are no entries with that prefix
+            else:
+                node = node._edges[edge]
+        # iterate ovr the children breadth first from there
+        # return default maximum of 4 tokens
+        for item, _ in zip(node.breadth_first(prefix), range(max_results)):
+            yield item
+
 
 def _beginning_match(a, b):
     """Return the number of characters matching at the beginning of the two symbols"""
@@ -59,6 +96,15 @@ def _beginning_match(a, b):
             break
         matched += 1
     return matched
+
+
+def _startswith(a, b):
+    """Returns whether the sequence a starts with the items in sequence b"""
+    if isinstance(a, STR_TYPES):
+        # noinspection PyUnresolvedReferences
+        return a.startswith(b)
+    else:
+        return _beginning_match(a, b) == len(b)
 
 
 class ShortTrie(object):
@@ -81,7 +127,7 @@ class ShortTrie(object):
             # an edge starts with the same character as this token
             token = token[1:]  # cut off first symbol
             more, child = self._edges[leader]
-            if token.startswith(more):
+            if _startswith(token, more):
                 # the new token starts with the same run of characters as the current child there
                 # i.e. edge is 'app', new token is 'apply'
                 child.insert(token[len(more):])  # recurse down with 'ly'
@@ -109,7 +155,7 @@ class ShortTrie(object):
         elif token[:1] in self._edges:
             more, child = self._edges[token[:1]]
             token = token[1:]  # cut off first symbol
-            if not token.startswith(more):
+            if not _startswith(token, more):
                 return False  # does not fully match this edge
             return child.contains(token[len(more):])
         else:
@@ -136,3 +182,42 @@ class ShortTrie(object):
                 edge_items = iter(node._edges.items())
                 if node._terminates:
                     yield prefix
+
+    # noinspection PyProtectedMember
+    def breadth_first(self, prefix=None):
+        """Helper breadth first traversal function for auto complete."""
+        q = deque()
+        q.appendleft((self, prefix))
+        while q:
+            node, prefix = q.pop()
+            if node._terminates:
+                yield prefix
+            for leader, (more, child) in node._edges.items():
+                edge = leader + more
+                q.appendleft((child, edge if prefix is None else prefix + edge))
+
+    def auto_complete(self, token, max_results=4):
+        """Trie auto complete."""
+        node = self
+        prefix = token
+        # traverse down until we have found the node that matches the given token
+        while token:
+            leader, token = token[:1], token[1:]
+            if leader not in node._edges:
+                return  # there are no entries with that next letter
+            else:
+                more, node = node._edges[leader]
+                if not _startswith(token, more):
+                    if _startswith(more, token):
+                        # token ends partway down this edge without diverging
+                        # add the remainder of this edge to the prefix and go traverse
+                        prefix += more[len(token):]
+                        break
+                    else:
+                        return  # the whole edge isn't in the given token, either
+                # cut off the rest of the edge label and continue
+                token = token[len(more):]
+        # iterate ovr the children breadth first from there
+        # return default maximum of 4 tokens
+        for item, _ in zip(node.breadth_first(prefix), range(max_results)):
+            yield item

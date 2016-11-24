@@ -15,6 +15,8 @@ def words():
             word = word.strip()
             if word not in d:
                 d[word] = len(d)
+            if len(d) == 5000:  # limit wordcount
+                break
     return d
 
 
