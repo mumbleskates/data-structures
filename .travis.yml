@@ -1,5 +1,9 @@
 language: python
-python: "3.6"
+python:
+  - "2.7"
+  - "3.4"
+  - "3.5"
+  - "3.6"
 # command to install dependencies
 install:
   - "pip install coveralls tox-travis"
