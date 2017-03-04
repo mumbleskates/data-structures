@@ -227,11 +227,6 @@ def check_invariants(bst):
         )
 
 
-@pytest.fixture(scope='session')
-def bigtree():
-    return BST(BIGTREE_ITEMS)
-
-
 @pytest.mark.parametrize('items', TREE_ITEMS)
 def test_init(items):
     BST(items)
