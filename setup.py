@@ -10,7 +10,9 @@ setup(
     license="MIT",
     packages=["data_structures"],
     package_dir={"": "src"},
-    install_requires=['future'],
+    install_requires=[
+        'future==0.16.0',
+    ],
     extras_require={
         'test': [
             'coverage==4.4.2',
