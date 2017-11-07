@@ -7,7 +7,8 @@
 ## This project contains sample code for implementing the following structures:
 
 ### Trie
-Ordered tree data structure used to store an associative array where we care about the path to the leaf, rather than any individual content of a node. Implements insert and contains methods.
+Ordered tree data structure used to store an associative array where we care about the path to the leaf, rather than
+any individual content of a node. Implements insert and contains methods.
 
 ### Insertion Sort
 Insertion-sort is an in-place sorting algorithm with O(n^2) average- & worst-case, O(n) best-case time complexity.
@@ -16,15 +17,17 @@ Insertion-sort is an in-place sorting algorithm with O(n^2) average- & worst-cas
 Merge-sort is a non in-place sorting algorithm with O(n log n) best- & worst-case time complexity.
 
 ### Radix Sort
-Radix sort is an efficient sorting algorithm that orders numbers by taking them apart digit by digit rather than comparing them directly. Time complexity is always a virtually constant O(n log k), where k is the length of the largest number (in this case, in hexadecimal).
+Radix sort is an efficient sorting algorithm that orders numbers by taking them apart digit by digit rather than
+comparing them directly. Time complexity is always a virtually constant O(n log k), where k is the length of the
+largest number (in this case, in hexadecimal).
 
 ### Quick Sort
 Quicksort is an in-place sorting algorithm with O(n log n) best- & average-case, O(n^2) worst-case time complexity.
 
 ### Binary Search Tree
-A Python implementation of a Binary Search Tree (BST). The value of each node in the BST is greater than the values stored in its left sub-tree, and smaller than the values in its right sub-tree. 
+A Python implementation of a Binary Search Tree (BST). The value of each node in the BST is greater than the values
+stored in its left sub-tree, and smaller than the values in its right sub-tree. 
 The BST has four traveral patterns: in-order, pre-order, post-order, and breadth-first.
-
 
 ### Graph
 
@@ -95,14 +98,20 @@ in the sequence of nodes.
 
 ### Stack
 
-This data structure that allows for a Last In First Out (LIFO) access to a collection of objects (nodes), each containing
-a link to its successor and a piece of data. Access is given through the methods push(), adding an item to the stack,
-or pop(), removing an item from the stack.
-
+This data structure that allows for a Last In First Out (LIFO) access to a collection of objects (nodes), each
+containing a link to its successor and a piece of data. Access is given through the methods push(), adding an item to
+the stack, or pop(), removing an item from the stack.
 
 ### Linked List
 
-This data structure has an ordered set of data elements (nodes), each containing a link to its successor and a piece of data.
+This data structure has an ordered set of data elements (nodes), each containing a link to its successor and a piece of
+data.
+
+### LRU Cache
+
+A dict-like structure that evicts least-recently-used entries when new entries are added until some maximum total cost
+is achieved. This is implemented as usual, using a hash-map concurrent to a doubly linked list that establishes recency
+order.
 
 ## *Interview Challenge: Proper Parenthetics*
 
