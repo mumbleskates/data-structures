@@ -89,6 +89,13 @@ class Lru(object):
         # unwrap the value
         return node.val
 
+    def get(self, key, default=None):
+        node = self._dict.get(key)
+        if node is None:
+            return default
+        node.touch(self)
+        return node.val
+
     def __delitem__(self, key):
         self._remove_node(self._dict[key])
         if not self._dict:

@@ -9,6 +9,7 @@ from data_structures.lru import Lru
 
 def test_works_as_dict():
     lru = Lru()
+    default = object()
     for i in range(10):
         assert lru.current_cost == len(lru) == i
         assert i not in lru
@@ -17,6 +18,9 @@ def test_works_as_dict():
     assert lru.current_cost == len(lru) == 10
     for i in range(10):
         assert lru[i] == str(i)
+        assert lru.get(i, default) == str(i)
+    assert 999 not in lru
+    assert lru.get(999, default) is default
 
 
 def test_del():
