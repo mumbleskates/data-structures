@@ -112,13 +112,18 @@ def test_lowering_budget_evicts():
 
 
 def test_cost_numeric_stability():
-    lru = Lru()
+    lru = Lru(cost_func=lambda k, v: v)
     lru['small'] = 1e-100
+    lru['small 2'] = 1e-100
     lru['big'] = 1e100
     demonstrate = lru['small'] + lru['big']
     demonstrate -= lru['big']
     demonstrate -= lru['small']
     assert demonstrate != 0
+    demonstrate -= lru['small 2']
+    assert demonstrate != 0
     del lru['big']
     del lru['small']
+    assert lru.current_cost != 0
+    del lru['small 2']
     assert lru.current_cost == 0
