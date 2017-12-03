@@ -17,7 +17,7 @@ setup(
         'test': [
             'coverage==4.4.2',
             'mock==2.0.0',
-            'pytest==3.2.3',
+            'pytest==3.3.0',
             'pytest-cov==2.5.1',
             'tox==2.9.1',
         ]
