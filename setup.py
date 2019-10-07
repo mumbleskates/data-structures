@@ -11,15 +11,15 @@ setup(
     packages=["data_structures"],
     package_dir={"": "src"},
     install_requires=[
-        'future==0.16.0',
+        'future==0.17.1',
     ],
     extras_require={
         'test': [
-            'coverage==4.4.2',
-            'mock==2.0.0',
-            'pytest==3.3.0',
-            'pytest-cov==2.5.1',
-            'tox==2.9.1',
+            'coverage==4.5.4',
+            'mock==3.0.5',
+            'pytest==5.2.1',
+            'pytest-cov==2.8.1',
+            'tox==3.14.0',
         ]
     },
 )
