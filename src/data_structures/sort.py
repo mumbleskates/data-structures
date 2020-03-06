@@ -100,7 +100,7 @@ def merge_sort_2(items, key=lambda x: x):
             end = min(start + width + width, len(items))
             right_item = source[right]
             right_key = key(right_item)
-            for merged in range(start, start + width * 2):
+            for merged in range(start, start + width * 2):  # pragma: no branch
                 if left_key <= right_key:
                     scratch[merged] = left_item
                     left += 1
