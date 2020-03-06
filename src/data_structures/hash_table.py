@@ -13,20 +13,18 @@ class HashTable(object):
 
     def __init__(self):
         """Create a hash table with fized size of 1024."""
-        self._table = [None] * 1024
+        self._table = [()] * 1024
 
     def get(self, key):
         """Return the value stored with the given key."""
         if not isinstance(key, STR_TYPES):
             raise TypeError(key, type(key), "Keys must be strings")
         i = self._hash(key)
-        if self._table[i]:
-            # inspector thinks all _table items are None
-            # noinspection PyTypeChecker
-            for k, v in self._table[i]:
-                if k == key:
-                    return v
-        raise KeyError(key)
+        for k, v in self._table[i]:
+            if k == key:
+                return v
+        else:
+            raise KeyError(key)
 
     def set(self, key, val):
         """Store the given value using the given key."""
@@ -36,8 +34,6 @@ class HashTable(object):
         if not self._table[i]:
             self._table[i] = [(key, val)]
         else:
-            # inspector thinks all _table items are None
-            # noinspection PyTypeChecker
             for bucket_index, (k, v) in enumerate(self._table[i]):
                 if k == key:
                     self._table[i][bucket_index] = (key, val)
