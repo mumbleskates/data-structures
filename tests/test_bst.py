@@ -198,11 +198,9 @@ def check_invariants(bst):
             return
         yield n
         if n.left:
-            assert n.left.parent is n
             for x in tree_nodes(n.left):
                 yield x
         if n.right:
-            assert n.right.parent is n
             for x in tree_nodes(n.right):
                 yield x
 

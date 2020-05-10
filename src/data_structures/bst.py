@@ -18,7 +18,6 @@ size, depth, balance: O(1)
 class _BSTNode(object):
     def __init__(self, value):
         self.val = value
-        self.parent = None
         self._left = None
         self._right = None
         self.len_ = 1
@@ -31,8 +30,6 @@ class _BSTNode(object):
     @left.setter
     def left(self, node):
         self._left = node
-        if node is not None:
-            node.parent = self
         self.update_stats()
 
     @property
@@ -42,8 +39,6 @@ class _BSTNode(object):
     @right.setter
     def right(self, node):
         self._right = node
-        if node is not None:
-            node.parent = self
         self.update_stats()
 
     def update_stats(self):
